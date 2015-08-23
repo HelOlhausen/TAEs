@@ -1,9 +1,7 @@
 import java.awt.Frame;
-import java.awt.BorderLayout;
 import controlP5.*;
 import java.util.ArrayList;
 private ControlP5 cp5;
-
 import SimpleOpenNI.*;
 import java.lang.*;
  
@@ -12,13 +10,6 @@ ControlFrame cf;
 
 SimpleOpenNI  context;
 
-color[]       userClr = new color[]{ color(255,0,0),
-                                     color(0,255,0),
-                                     color(0,0,255),
-                                     color(255,255,0),
-                                     color(255,0,255),
-                                     color(0,255,255)
-                                   };
 PVector com = new PVector();                                   
 PVector com2d = new PVector();  
 
@@ -62,34 +53,26 @@ float position;
 // Opcion espejado (pixela barra contraria)
 boolean espejado = false;
 
-// Mapa de profundidad
+// Mapas de profundidades
 int[] dMapBase;
 int[] dMap;
 
-// Puntos en los que se encuentra al bailarin
-ArrayList<Integer> puntos = new ArrayList<Integer>();
 
 // esta funcion se ejecuta una vez sola, al principio
 void setup(){
   
   context = new SimpleOpenNI(this);
-  
-  size(displayWidth, displayHeight);
+   size(displayWidth, displayHeight);
   scale(1.6);
   screen_width = displayWidth;
   screen_height = displayHeight;
   // por defecto esta cargada la opcion de dibujar un contorno de color negro en las figuras
   // la queremos deshabilitar
   noStroke();
-  
   // cargo controlador
   cp5 = new ControlP5(this);
   cf = addControlFrame("Controladores", 600,600);
   
-  
-  /////////////////////////
-  
-  context = new SimpleOpenNI(this);
   if(context.isInit() == false)
   {
    println("Can't init SimpleOpenNI, maybe the camera is not connected!"); 
@@ -105,33 +88,12 @@ void setup(){
  
   // enable skeleton generation for all joints
  context.enableUser();
- 
-
- 
+  
  //Mapa de profundidad 
  dMapBase = context.depthMap();
  
- //ESCALAR PANTALLA 
-
-//  size(displayWidth,displayHeight);
  
  smooth(); 
- // size define el tamano de nuestro sketch
-  
- //ESCALAR PANTALLA 
-  //screen_height = context.depthHeight();
-  //screen_width = context.depthWidth(); 
- //size(screen_width,screen_height);
- 
- // 5 fps
-  frameRate(10);
-
-//  // Create the fullscreen object
-//  fs = new FullScreen(this); 
-//  
-//  // enter fullscreen mode
-//  fs.enter(); 
- 
 };
 
 // esta funcion se ejecuta todo el tiempo en un loop constante 
@@ -146,7 +108,6 @@ void draw()
   
   // update the cam
   context.update();
-
   
   // Busco un usuario
   int[] userList = context.getUsers();
@@ -160,42 +121,14 @@ void draw()
     }
   }
 
-//  int[] userList = new int[0];
-//
-//  // Si no se detecta ningun usuario, se tiene en cuenta el mapa de profundidad
-//  if( userList.length == 0)
-//  {  
-//    // Cargo el mapa de profundidad
-//    dMap = context.depthMap();
-//    println("Calculando profundidad...........");
-//    // position = obtenerPosicionProfundidadMinima(dMap);
-//    position = obtenerPosicionProfundidadMinimaTotal(dMap);
-//    println("------------> Posicion es: " + position);
-//  }
-  
   if(!espejado)
   {
     position = screen_width - position;
   }
   
-//   int[] dMap = context.depthMap();
-//   for(int pos = 10; pos < context.depthMapSize(); pos = pos + 1) { 
-//     if((dMap[pos] != 0) && (dMapBase[pos] != 0) && (Math.abs(dMap[pos] - dMapBase[pos]) > 0)) {
-//       println(pos);
-//       puntos.add(pos % screen_height);
-//     }
-//   }
-  
-  // for(Integer p : puntos){
-  //   println(p);
-  // }
-//println(dMap[5000]);
-  
   // Dibujo barras de colores
   drawTv(colorsNr, cantBarrasAdyacentesColoreadas,position);
-  
-  // Reiniciamos los puntos
-  //puntos.clear();
+
 };
 
 void createNoisyBackground(int luminosidadRuido){
@@ -255,40 +188,6 @@ void drawTv( int bars_nr, int cantBarrasAdyacentesColoreadas, float xPosition) {
   }
 }
 
-
-////////////////////////////
-// draw the skeleton with the selected joints
-void drawSkeleton(int userId)
-{
-  // to get the 3d joint data
-  /*
-  PVector jointPos = new PVector();
-  context.getJointPositionSkeleton(userId,SimpleOpenNI.SKEL_NECK,jointPos);
-  println(jointPos);
-  */
-  
-  context.drawLimb(userId, SimpleOpenNI.SKEL_HEAD, SimpleOpenNI.SKEL_NECK);
-
-  context.drawLimb(userId, SimpleOpenNI.SKEL_NECK, SimpleOpenNI.SKEL_LEFT_SHOULDER);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_SHOULDER, SimpleOpenNI.SKEL_LEFT_ELBOW);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_ELBOW, SimpleOpenNI.SKEL_LEFT_HAND);
-
-  context.drawLimb(userId, SimpleOpenNI.SKEL_NECK, SimpleOpenNI.SKEL_RIGHT_SHOULDER);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_SHOULDER, SimpleOpenNI.SKEL_RIGHT_ELBOW);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_ELBOW, SimpleOpenNI.SKEL_RIGHT_HAND);
-
-  context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_SHOULDER, SimpleOpenNI.SKEL_TORSO);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_SHOULDER, SimpleOpenNI.SKEL_TORSO);
-
-  context.drawLimb(userId, SimpleOpenNI.SKEL_TORSO, SimpleOpenNI.SKEL_LEFT_HIP);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_HIP, SimpleOpenNI.SKEL_LEFT_KNEE);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_KNEE, SimpleOpenNI.SKEL_LEFT_FOOT);
-
-  context.drawLimb(userId, SimpleOpenNI.SKEL_TORSO, SimpleOpenNI.SKEL_RIGHT_HIP);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_HIP, SimpleOpenNI.SKEL_RIGHT_KNEE);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_KNEE, SimpleOpenNI.SKEL_RIGHT_FOOT);  
-}
-
 // -----------------------------------------------------------------
 // SimpleOpenNI events
 
@@ -307,7 +206,7 @@ void onLostUser(SimpleOpenNI curContext, int userId)
 
 void onVisibleUser(SimpleOpenNI curContext, int userId)
 {
-  //println("onVisibleUser - userId: " + userId);
+  println("onVisibleUser - userId: " + userId);
 }
 
 
@@ -315,110 +214,12 @@ void keyPressed()
 {
   switch(key)
   {
-  case ' ':
+  case '+':
+    println("Funca el +");
     context.setMirror(!context.mirror());
     break;
   }
 }  
-
-/* Esta funcion considera 3 lineas horizontales de la pantalla (a las alturas 
-3/6, 4/6 y 5/6 contando desde arriba) y retorna la coordenada x de la posicion 
-de minima profundidad en dichas lineas */
-float obtenerPosicionProfundidadMinima(int[] dMap)
-{
-  // Inicializo respuesta
-  float respuesta = 0;
-  
-  // Inicializo el arreglo para almacenar las posiciones de profundidad
-  // minima en las 3 filas a considerar
-  int[] puntos_candidatos = new int[3]; 
-
-  // Divido el arreglo de profundidad en 6 segmentos
-  int intervalo_de_medida = context.depthMapSize() / 6;
-  println("Intervalo de medida = " + intervalo_de_medida);
-
-  // Considero unicamente la mitad inferior del arreglo de profundidad
-  for(int i = 3; i <= 5; i++)
-  {
-    // Determino punto inicial de la fila a recorrer
-    int inicio = intervalo_de_medida * i;
-    // Inicializo variables auxiliares
-    int minimo = inicio;
-    int valor_minimo = dMap[inicio]; 
-    // Recorro una linea horizontal, tomando una medida cada 10 puntos
-    for(int j = inicio; j < inicio + screen_width; j = j + 10)
-    {
-      // Comparo la profundidad en el punto actual con la profundidad minima
-      // Me quedo con el menor valor distinto de 0
-      if((dMap[j] < valor_minimo) || (valor_minimo == 0))
-      {
-        valor_minimo = dMap[j];
-        minimo = j;
-      }
-    }
-    // Almaceno el minimo de la linea
-    puntos_candidatos[i - 3] = minimo;
-  }
-
-  // Obtengo la profundidad minima de las 3 medidas
-  if(dMap[puntos_candidatos[0]] <= dMap[puntos_candidatos[1]])
-  {
-    if(dMap[puntos_candidatos[0]] <= dMap[puntos_candidatos[2]])
-    {
-      respuesta = calcular_x(puntos_candidatos[0], screen_height);      
-    }
-    else
-    {
-      respuesta = calcular_x(puntos_candidatos[2], screen_height);
-    }      
-  }
-  else
-  {
-     if(dMap[puntos_candidatos[1]] <= dMap[puntos_candidatos[2]])
-     {
-      respuesta = calcular_x(puntos_candidatos[1], screen_height);
-     } 
-     else
-     {
-      respuesta = calcular_x(puntos_candidatos[2], screen_height);
-     }
-  }
-
-  // Retorno posicion x de profundidad minima
-  return respuesta;
-}
-
-float calcular_x(int pos, int screen_height)
-{
-  return (pos % screen_height);
-}
-
-float obtenerPosicionProfundidadMinimaTotal(int[] dMap)
-{
-  int closestValue = 8000;
-  int closestX = 1;
-  // for each row in the depth image
-  for(int y = 0; y <context.depthHeight(); y++)
-  {
-    // look at each pixel in the row
-    for(int x = 0; x < context.depthWidth(); x++)
-    { 
-      // pull out the corresponding value from the depth array
-      int i = x + y * context.depthWidth();
-      int currentDepthValue = dMap[i];
-      // if that pixel is the closest one we've seen so far
-      if(currentDepthValue > 0 && currentDepthValue < closestValue)
-      {
-        // save its value
-        closestValue = currentDepthValue;
-        // and save its position (X coordinate)
-        closestX = x;
-      }
-    }
-  }
-  return closestX;
-}
-
 
 void multiBarras (int[] dMapBase){
   boolean[] genteEnBarra=  new boolean[colorsNr];
