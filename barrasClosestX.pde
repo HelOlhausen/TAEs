@@ -6,9 +6,7 @@ private ControlP5 cp5;
 
 import SimpleOpenNI.*;
 import java.lang.*;
-
-import fullscreen.*; 
-FullScreen fs; 
+ 
 
 ControlFrame cf;
 
@@ -24,6 +22,7 @@ color[]       userClr = new color[]{ color(255,0,0),
 PVector com = new PVector();                                   
 PVector com2d = new PVector();  
 
+boolean sketchFullScreen() { return true; }
 // aca estan los colores de las barras
 // definidos en el colorMode RGB -> https://processing.org/reference/colorMode_.html
 // color( R, G, B)
@@ -37,13 +36,10 @@ color[] color_bars={
   color(0,0,192)
 };
 
-// Largo de la pantalla
-int c = 800;
-
 
 // Altura de la pantalla
-int screen_height = 480;
-int screen_width = 640;
+int screen_height;
+int screen_width;
 
 // aca se guarda el nro total de los colores definidos
 int colorsNr = color_bars.length;
@@ -77,8 +73,11 @@ ArrayList<Integer> puntos = new ArrayList<Integer>();
 void setup(){
   
   context = new SimpleOpenNI(this);
-  size(640, 480);
   
+  size(displayWidth, displayHeight);
+  scale(1.6);
+  screen_width = displayWidth;
+  screen_height = displayHeight;
   // por defecto esta cargada la opcion de dibujar un contorno de color negro en las figuras
   // la queremos deshabilitar
   noStroke();
@@ -127,11 +126,11 @@ void setup(){
  // 5 fps
   frameRate(10);
 
-  // Create the fullscreen object
-  fs = new FullScreen(this); 
-  
-  // enter fullscreen mode
-  fs.enter(); 
+//  // Create the fullscreen object
+//  fs = new FullScreen(this); 
+//  
+//  // enter fullscreen mode
+//  fs.enter(); 
  
 };
 
@@ -143,47 +142,49 @@ void draw()
   createNoisyBackground(luminosidadRuido);  
   
   // Por defecto la barra a modificar es la de la posicion del mouse
-  position = mouseX;
+  position = 320;
   
   // update the cam
   context.update();
+
   
   // Busco un usuario
-//  int[] userList = context.getUsers();
-//  for(int i=0;i<userList.length;i++)
-//  {
-//    // Obtengo el centro de masa
-//    if(context.getCoM(userList[i],com)) {
-//      // Seleccionamos la posicion en el eje horizontal del centro de masa
-//      // para dibujar la barra noisy
-//      position = com.x;
-//    }
-//  }
-
-int[] userList = new int[0];
-
-  // Si no se detecta ningun usuario, se tiene en cuenta el mapa de profundidad
-  if( userList.length == 0)
-  {  
-    // Cargo el mapa de profundidad
-    dMap = context.depthMap();
-    println("Calculando profundidad...........");
-    // position = obtenerPosicionProfundidadMinima(dMap);
-    position = obtenerPosicionProfundidadMinimaTotal(dMap);
-    println("------------> Posicion es: " + position);
+  int[] userList = context.getUsers();
+  for(int i=0;i<userList.length;i++)
+  {
+    // Obtengo el centro de masa
+    if(context.getCoM(userList[i],com)) {
+      // Seleccionamos la posicion en el eje horizontal del centro de masa
+      // para dibujar la barra noisy
+      position = com.x;
+    }
   }
+
+//  int[] userList = new int[0];
+//
+//  // Si no se detecta ningun usuario, se tiene en cuenta el mapa de profundidad
+//  if( userList.length == 0)
+//  {  
+//    // Cargo el mapa de profundidad
+//    dMap = context.depthMap();
+//    println("Calculando profundidad...........");
+//    // position = obtenerPosicionProfundidadMinima(dMap);
+//    position = obtenerPosicionProfundidadMinimaTotal(dMap);
+//    println("------------> Posicion es: " + position);
+//  }
   
   if(!espejado)
   {
-    position = 640 - position;
+    position = screen_width - position;
   }
-  // int[] dMap = context.depthMap();
-  // for(int pos = 10; pos < context.depthMapSize(); pos = pos + 1) { 
-  //   if(Math.abs(dMap[pos] - dMapBase[pos]) > 0) {
-  //     println(pos);
-  //     puntos.add(pos % 480);
-  //   }
-  // }
+  
+//   int[] dMap = context.depthMap();
+//   for(int pos = 10; pos < context.depthMapSize(); pos = pos + 1) { 
+//     if((dMap[pos] != 0) && (dMapBase[pos] != 0) && (Math.abs(dMap[pos] - dMapBase[pos]) > 0)) {
+//       println(pos);
+//       puntos.add(pos % screen_height);
+//     }
+//   }
   
   // for(Integer p : puntos){
   //   println(p);
@@ -227,9 +228,9 @@ void createNoisyBackground(int luminosidadRuido){
 void drawTv( int bars_nr, int cantBarrasAdyacentesColoreadas, float xPosition) {
   // definimos el ancho de las barras 
   // por el tema del redondeo hacemos +1 para cubrir toda la pantalla
-  int bar_width = 640 / bars_nr +1;
+  int bar_width = screen_width / bars_nr +1;
   // en funcion de la posicion x del mouse definimos cual de las barras de colores no se dibujara
-  int whichBar = cantBarrasAdyacentesColoreadas - ((int)(xPosition / bar_width));
+  int whichBar = (int)(xPosition / bar_width);
   if(whichBar < 0 ) whichBar = 0;
   if(whichBar > bars_nr - 1) whichBar = bars_nr - 1;
 
@@ -242,14 +243,14 @@ void drawTv( int bars_nr, int cantBarrasAdyacentesColoreadas, float xPosition) {
         // el color de la barra se corresponde a un color definido en el array color_bars[]
         fill(color_bars[i%colorsNr]);
         // dibujamos el rectangulo
-        rect(i * bar_width, 0, bar_width, 480); 
+        rect(i * bar_width, 0, bar_width, screen_height); 
       }
     }
     else{
       // pintamos la barra de negro
       fill(color(0));
       // dibujamos el rectangulo
-      rect(i * bar_width, 0, bar_width, 480); 
+      rect(i * bar_width, 0, bar_width, screen_height); 
     }      
   }
 }
