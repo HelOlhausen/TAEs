@@ -1,4 +1,3 @@
-
 public class ControlFrame extends PApplet {
 
   int w, h;
