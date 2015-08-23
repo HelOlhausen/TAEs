@@ -5,6 +5,7 @@ public class ControlFrame extends PApplet {
   Object parent;
   
   ColorPicker[] cp = new ColorPicker[7];
+  CheckBox checkbox;
   
   public void setup() {
     size(w, h);
@@ -21,21 +22,15 @@ public class ControlFrame extends PApplet {
       .setRange(0,255)
       .setValue(255)
       .setPosition(10,30);
-    cp5.addToggle("Modo invertido")
-     .plugTo(parent,"modoInvertido")
-     .setPosition(10,50)
-     .setSize(50,20)
-     .setValue(false);
-    cp5.addToggle("Modo espejo")
-     .plugTo(parent,"espejado")
-     .setPosition(10,90)
-     .setSize(50,20)
-     .setValue(false);
-    cp5.addToggle("Lluvia colorida")
-     .plugTo(parent,"lluviaColorida")
-     .setPosition(10,130)
-     .setSize(50,20)
-     .setValue(false);
+
+    checkbox = cp5.addCheckBox("checkbox")
+      .setPosition(10,50)
+      .setSize(20,20)
+      .setItemsPerRow(1)
+      .setSpacingRow(20)
+      .addItem("Modo invertido", 0)
+      .addItem("Modo espejo", 0)
+      .addItem("Lluvia colorida", 0);
      
     int yInicial = 20; 
     for(int i = 0; i < 7; i++)
@@ -92,7 +87,17 @@ public class ControlFrame extends PApplet {
         this.cp[i].setColorValue(color(colorR, colorG, colorB));
       }
     }
-  }
+    
+    // Cambio en las checkbox
+    if( n == "checkbox"){
+      float[] v = theEvent.getArrayValue();
+      println(v);
+      modoInvertido  = v[0] == 1;
+      espejado       = v[1] == 1;
+      lluviaColorida = v[2] == 1;      
+    }
+  } // end controlEvent
+  
 }
 
 ControlFrame addControlFrame(String theName, int theWidth, int theHeight) {
