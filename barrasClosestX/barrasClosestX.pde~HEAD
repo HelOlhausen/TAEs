@@ -85,7 +85,7 @@ void setup(){
   
   // cargo controlador
   cp5 = new ControlP5(this);
-  cf = addControlFrame("Controladores", 250,200);
+  cf = addControlFrame("Controladores", 600,600);
   
   
   /////////////////////////
