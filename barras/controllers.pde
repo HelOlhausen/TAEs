@@ -49,6 +49,11 @@ public class ControlFrame extends PApplet {
         .setPosition(10, 170)
         .setSize(50,20)
         .setLabel("Cambiar colores");
+        
+      cp5.addToggle("multiBarra")
+        .setPosition(10, 220)
+        .plugTo(parent,"multiBarra")
+        .setLabel("Modo Multi-Barra");
   }
   
   public void draw() {

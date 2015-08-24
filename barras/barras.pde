@@ -53,6 +53,8 @@ float position;
 // Opcion espejado (pixela barra contraria)
 boolean espejado = false;
 
+boolean multiBarra = false;
+
 // Mapas de profundidades
 int[] dMapBase;
 int[] dMap;
@@ -94,11 +96,13 @@ void setup(){
  
  
  smooth(); 
+
 };
 
 // esta funcion se ejecuta todo el tiempo en un loop constante 
 void draw()
 {  
+   
   /////////////////////
   // la funcion que creamos para dibujar el fondo ruidoso
   createNoisyBackground(luminosidadRuido);  
@@ -109,26 +113,42 @@ void draw()
   // update the cam
   context.update();
   
-  // Busco un usuario
-  int[] userList = context.getUsers();
-  for(int i=0;i<userList.length;i++)
-  {
-    // Obtengo el centro de masa
-    if(context.getCoM(userList[i],com)) {
-      // Seleccionamos la posicion en el eje horizontal del centro de masa
-      // para dibujar la barra noisy
-      position = com.x;
+  if(!multiBarra)
+  {    
+    // Busco un usuario
+    int[] userList = context.getUsers();
+    for(int i=0;i<userList.length;i++)
+    {
+      // Obtengo el centro de masa
+      if(context.getCoM(userList[i],com)) {
+        // Seleccionamos la posicion en el eje horizontal del centro de masa
+        // para dibujar la barra noisy
+        position = com.x;
+      }
     }
-  }
-
-  if(!espejado)
-  {
-    position = screen_width - position;
-  }
   
-  // Dibujo barras de colores
-  drawTv(colorsNr, cantBarrasAdyacentesColoreadas,position);
-
+    if(!espejado)
+    {
+      position = screen_width - position;
+    }
+    
+    // Dibujo barras de colores
+    drawTv(colorsNr, cantBarrasAdyacentesColoreadas,position);
+  }
+  else
+  {
+    boolean[] genteEnBarra = multiBarras(dMapBase);
+    if(!espejado)
+    {
+      boolean[] genteEnBarraInvertida = new boolean[genteEnBarra.length];
+      for(int i = 0; i < genteEnBarra.length; i++)
+      {
+        genteEnBarraInvertida[genteEnBarra.length -1 - i] = genteEnBarra[i];
+      }
+      genteEnBarra = genteEnBarraInvertida;
+    }
+    drawTvMultiBarra(colorsNr, genteEnBarra);
+  }
 };
 
 void createNoisyBackground(int luminosidadRuido){
@@ -188,6 +208,22 @@ void drawTv( int bars_nr, int cantBarrasAdyacentesColoreadas, float xPosition) {
   }
 }
 
+void drawTvMultiBarra( int bars_nr, boolean [] genteEnBarra) {
+  // definimos el ancho de las barras 
+  // por el tema del redondeo hacemos +1 para cubrir toda la pantalla
+  int bar_width = screen_width / bars_nr +1;
+
+  // dibujamos las barras
+  for (int i = 0; i < bars_nr; i ++) {
+    // dibujamos solo si el mouse no esta parado en esta barra y no esta en modo invertido
+    if(((!genteEnBarra[i]) && !modoInvertido) || (genteEnBarra[i] && modoInvertido)) {
+      // el color de la barra se corresponde a un color definido en el array color_bars[]
+      fill(color_bars[i%colorsNr]);
+      // dibujamos el rectangulo
+      rect(i * bar_width, 0, bar_width, screen_height); 
+    }    
+  }
+}
 // -----------------------------------------------------------------
 // SimpleOpenNI events
 
@@ -204,11 +240,6 @@ void onLostUser(SimpleOpenNI curContext, int userId)
   println("onLostUser - userId: " + userId);
 }
 
-void onVisibleUser(SimpleOpenNI curContext, int userId)
-{
-  println("onVisibleUser - userId: " + userId);
-}
-
 
 void keyPressed()
 {
@@ -221,27 +252,37 @@ void keyPressed()
   }
 }  
 
-void multiBarras (int[] dMapBase){
+boolean[] multiBarras (int[] dMapBase){
   boolean[] genteEnBarra=  new boolean[colorsNr];
   for (int x=0; x<colorsNr;x=x+1){
     genteEnBarra[x]=false;
   }
   context.update();
   int[]   depthMap = context.depthMap();
+  int[]   userMap = context.userMap();
+  float barWidth= context.depthWidth()/colorsNr;
   int index;
   for(int x=0;x <context.depthWidth();x+=1)
   {
     for(int y=0;y < context.depthHeight() ;y+=1)
     {
       index = x + y * context.depthWidth();
-      int d = abs( dMapBase[index]-depthMap[index]);
+      int d = depthMap[index];
       if(d>0){
-        genteEnBarra[(int) (x/context.depthWidth()/(colorsNr))]=true;
+        int userNr =userMap[index];
+          if( userNr > 0)
+          { 
+            float posicion = map (x/barWidth, 0, 7.1,0,6.999999);
+            genteEnBarra[(int) posicion]=true;
+               
+          }
       }
     }
+    println((x/barWidth));
   }
   for (int x=0; x<colorsNr;x++){
     println("Barra " + x + ": " + genteEnBarra[x]);
   }
+  return genteEnBarra;
 }
 
