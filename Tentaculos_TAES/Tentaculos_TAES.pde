@@ -16,6 +16,7 @@ color[]       userClr = new color[]{ color(255,0,0),
                                      color(255,0,255),
                                      color(0,255,255)
                                    };
+int[] userList;                           
 
 
 
@@ -70,7 +71,7 @@ void draw() {
   image(context.userImage(),0,0);
   
   // draw the skeleton if it's available
-  int[] userList = context.getUsers();
+  userList = context.getUsers();
   for(int i=0;i<userList.length;i++)
   {
     if(context.isTrackingSkeleton(userList[i]))
@@ -81,7 +82,8 @@ void draw() {
   }
   
   // Dibujamos tentaculo izquierdo
-  reachSegmentIzq(0, mouseX, mouseY);
+  float[] left_hand_pos = findHand(false);
+  reachSegmentIzq(0, left_hand_pos[0], left_hand_pos[1]);
   for(int i=1; i<numSegments; i++) {
     reachSegmentIzq(i, targetXIzq, targetYIzq);
   }
@@ -94,7 +96,8 @@ void draw() {
   
   
   // Dibujamos tentaculo derecho
-  reachSegmentDer(0, mouseX, mouseY);
+  float[] right_hand_pos = findHand(true);
+  reachSegmentDer(0, right_hand_pos[0], right_hand_pos[1]);
   for(int i=1; i<numSegments; i++) {
     reachSegmentDer(i, targetXDer, targetYDer);
   }
@@ -209,4 +212,45 @@ void keyPressed()
     break;
   }
 }  
+
+float [] findHand(boolean right_hand){
+  float[] result=new float[2];
+  result[0] = mouseX;
+  result[1] = mouseY;
+    // if we found any users
+  if (userList.length > 0) {
+    // get the first user
+    int userId = userList[0];
+    // if we’re successfully calibrated
+
+    if ( context.isTrackingSkeleton(userId)) {
+      // make a vector to store the left hand
+      PVector rightHand = new PVector();
+      // put the position of the left hand into that vector
+      float confidence;
+      if(right_hand){
+        confidence = context.getJointPositionSkeleton(userId,
+        SimpleOpenNI.SKEL_RIGHT_HAND,
+        rightHand);
+      }
+      else{
+        confidence = context.getJointPositionSkeleton(userId,
+        SimpleOpenNI.SKEL_LEFT_HAND,
+        rightHand);
+      }
+
+      // convert the detected hand position
+      // to "projective" coordinates
+      // that will match the depth image
+      PVector convertedRightHand = new PVector();
+      context.convertRealWorldToProjective(rightHand, convertedRightHand);
+      result[0] = convertedRightHand.x;
+      result[1] = convertedRightHand.y;
+      // and display it
+      // fill(255,0,0);
+      // ellipse(convertedRightHand.x, convertedRightHand.y, 10, 10);
+    }
+  }
+  return result;
+}
 
