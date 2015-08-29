@@ -5,8 +5,13 @@
  * The arm follows the position of the mouse by
  * calculating the angles with atan2(). 
  */
- 
+import java.awt.Frame;
+import java.awt.BorderLayout;
 import SimpleOpenNI.*;
+import controlP5.*;
+private ControlP5 cp5;
+
+ControlFrame cf;
 
 SimpleOpenNI  context;
 color[]       userClr = new color[]{ color(255,0,0),
@@ -16,8 +21,8 @@ color[]       userClr = new color[]{ color(255,0,0),
                                      color(255,0,255),
                                      color(0,255,255)
                                    };
-int[] userList;                           
-
+int[] userList; 
+int currentUser = 1;
 
 
 int numSegments = 10;
@@ -34,9 +39,12 @@ float[] xDer = new float[numSegments];
 float[] yDer = new float[numSegments];
 float[] angleDer = new float[numSegments];
 float targetXDer, targetYDer;
-
+boolean draw_Skeleton = false;
+boolean draw_User = false;
 void setup() {
   size(640, 360);
+  cp5 = new ControlP5(this);
+  cf = addControlFrame("Controladores", 250,200);
   strokeWeight(20.0);
   stroke(255, 100);
   xIzq[xIzq.length-1] = width/7;     // Set base x-coordinate
@@ -68,16 +76,19 @@ void draw() {
   
   // draw depthImageMap
   //image(context.depthImage(),0,0);
-  image(context.userImage(),0,0);
-  
+  if(draw_User){
+    image(context.userImage(),0,0);
+  }
   // draw the skeleton if it's available
   userList = context.getUsers();
   for(int i=0;i<userList.length;i++)
   {
     if(context.isTrackingSkeleton(userList[i]))
     {
-      stroke(userClr[ (userList[i] - 1) % userClr.length ] );
-      drawSkeleton(userList[i]);
+      if(draw_Skeleton){
+        stroke(userClr[ (userList[i] - 1) % userClr.length ] );
+        drawSkeleton(userList[i]);
+      }
     } 
   }
   
@@ -188,13 +199,26 @@ void onNewUser(SimpleOpenNI curContext, int userId)
 {
   println("onNewUser - userId: " + userId);
   println("\tstart tracking skeleton");
-  
+  currentUser = userId - 1;
   curContext.startTrackingSkeleton(userId);
 }
 
 void onLostUser(SimpleOpenNI curContext, int userId)
 {
   println("onLostUser - userId: " + userId);
+  int[] usuarios = curContext.getUsers();
+  if(usuarios.length > 0){
+    int pos = 0;
+    while(! curContext.isTrackingSkeleton(pos) && pos < usuarios.length){
+      pos++;
+    }
+    if (pos < usuarios.length){
+      currentUser = pos;
+    }
+    else{
+      currentUser = 0;
+    }
+  } 
 }
 
 void onVisibleUser(SimpleOpenNI curContext, int userId)
@@ -220,7 +244,7 @@ float [] findHand(boolean right_hand){
     // if we found any users
   if (userList.length > 0) {
     // get the first user
-    int userId = userList[0];
+    int userId = userList[currentUser];
     // if we’re successfully calibrated
 
     if ( context.isTrackingSkeleton(userId)) {
@@ -246,9 +270,6 @@ float [] findHand(boolean right_hand){
       context.convertRealWorldToProjective(rightHand, convertedRightHand);
       result[0] = convertedRightHand.x;
       result[1] = convertedRightHand.y;
-      // and display it
-      // fill(255,0,0);
-      // ellipse(convertedRightHand.x, convertedRightHand.y, 10, 10);
     }
   }
   return result;
