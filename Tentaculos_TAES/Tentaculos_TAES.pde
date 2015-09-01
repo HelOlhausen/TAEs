@@ -1,10 +1,3 @@
-/**
- * Reach 2  
- * based on code from Keith Peters.
- * 
- * The arm follows the position of the mouse by
- * calculating the angles with atan2(). 
- */
 import java.awt.Frame;
 import java.awt.BorderLayout;
 import SimpleOpenNI.*;
@@ -14,6 +7,7 @@ private ControlP5 cp5;
 ControlFrame cf;
 
 SimpleOpenNI  context;
+color color_tentaculos = color(255,255,255,200);
 color[]       userClr = new color[]{ color(255,0,0),
                                      color(0,255,0),
                                      color(0,0,255),
@@ -41,10 +35,11 @@ float[] angleDer = new float[numSegments];
 float targetXDer, targetYDer;
 boolean draw_Skeleton = false;
 boolean draw_User = false;
+
 void setup() {
   size(640, 360);
   cp5 = new ControlP5(this);
-  cf = addControlFrame("Controladores", 250,200);
+  cf = addControlFrame("Controladores", 300,300);
   strokeWeight(20.0);
   stroke(255, 100);
   xIzq[xIzq.length-1] = width/7;     // Set base x-coordinate
@@ -92,6 +87,42 @@ void draw() {
     } 
   }
   
+  dibujarTentaculos();
+
+}
+
+void dibujarTentaculos(){
+  // Cargamos color de tentaculos
+  stroke(color_tentaculos);
+  
+  // Actualizar tamanio de arreglos
+  actualizarArreglosTentaculos();
+  
+  // Dibujamos tentaculos
+  dibujarTentaculoIzq();
+  dibujarTentaculoDer(); 
+}
+
+void actualizarArreglosTentaculos(){
+  // Variables para definir el tentaculo izquierdo
+  xIzq = new float[numSegments];
+  yIzq = new float[numSegments];
+  angleIzq = new float[numSegments];
+  
+  // Variables para definir el tentaculo derecho
+  xDer = new float[numSegments];
+  yDer = new float[numSegments];
+  angleDer = new float[numSegments];
+
+  xIzq[xIzq.length-1] = width/7;     // Set base x-coordinate
+  yIzq[xIzq.length-1] = height;  // Set base y-coordinate
+  
+  xDer[xDer.length-1] = width - width/7;     // Set base x-coordinate
+  yDer[xDer.length-1] = height;  // Set base y-coordinate
+}
+  
+// Funciones tentaculo izquierdo
+void dibujarTentaculoIzq(){  
   // Dibujamos tentaculo izquierdo
   float[] left_hand_pos = findHand(false);
   reachSegmentIzq(0, left_hand_pos[0], left_hand_pos[1]);
@@ -104,23 +135,8 @@ void draw() {
   for(int i=0; i<xIzq.length; i++) {
     segment(xIzq[i], yIzq[i], angleIzq[i], (i+1)*2); 
   }
-  
-  
-  // Dibujamos tentaculo derecho
-  float[] right_hand_pos = findHand(true);
-  reachSegmentDer(0, right_hand_pos[0], right_hand_pos[1]);
-  for(int i=1; i<numSegments; i++) {
-    reachSegmentDer(i, targetXDer, targetYDer);
-  }
-  for(int i=xDer.length-1; i>=1; i--) {
-    positionSegmentDer(i, i-1);  
-  } 
-  for(int i=0; i<xDer.length; i++) {
-    segment(xDer[i], yDer[i], angleDer[i], (i+1)*2); 
-  }
 }
 
-// Funciones tentaculo izquierdo
 void positionSegmentIzq(int a, int b) {
   xIzq[b] = xIzq[a] + cos(angleIzq[a]) * segLength;
   yIzq[b] = yIzq[a] + sin(angleIzq[a]) * segLength; 
@@ -136,6 +152,21 @@ void reachSegmentIzq(int i, float xin, float yin) {
 
 
 // Funciones tentaculo derecho
+void dibujarTentaculoDer(){  
+  // Dibujamos tentaculo derecho
+  float[] right_hand_pos = findHand(true);
+  reachSegmentDer(0, right_hand_pos[0], right_hand_pos[1]);
+  for(int i=1; i<numSegments; i++) {
+    reachSegmentDer(i, targetXDer, targetYDer);
+  }
+  for(int i=xDer.length-1; i>=1; i--) {
+    positionSegmentDer(i, i-1);  
+  } 
+  for(int i=0; i<xDer.length; i++) {
+    segment(xDer[i], yDer[i], angleDer[i], (i+1)*2); 
+  }
+}
+
 void positionSegmentDer(int a, int b) {
   xDer[b] = xDer[a] + cos(angleDer[a]) * segLength;
   yDer[b] = yDer[a] + sin(angleDer[a]) * segLength; 

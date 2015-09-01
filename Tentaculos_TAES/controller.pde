@@ -4,7 +4,7 @@ public class ControlFrame extends PApplet {
   int w, h;
   ControlP5 cp5;
   Object parent;
-  ColorPicker[] cp = new ColorPicker[7];
+  ColorPicker cp;
   
   public void setup() {
     size(w, h);
@@ -13,10 +13,12 @@ public class ControlFrame extends PApplet {
 
     cp5.addSlider("Largo de segmento")
       .plugTo(parent,"segLength")
+      .setValue(26)
       .setRange(3, 35)
       .setPosition(10,10);
     cp5.addSlider("Cantidad de segmentos")
       .plugTo(parent,"numSegments")
+      .setValue(10)
       .setRange(3, 10)
       .setPosition(10,20);
     cp5.addToggle("DibujarEsqueleto")
@@ -28,7 +30,7 @@ public class ControlFrame extends PApplet {
         .plugTo(parent,"draw_User")
         .setLabel("Dibujar Usuario");
     // Selecciono colores aleatorios iniciales
-    cp[1] = cp5.addColorPicker("picker")
+    cp = cp5.addColorPicker("picker")
       .setPosition(10, 150)
       .setTitle("Color de tentaculo")
       .setColorValue(color(255,255,255,200));
@@ -36,6 +38,7 @@ public class ControlFrame extends PApplet {
   
   public void draw() {
     background(0);
+    color_tentaculos = cp.getColorValue();
   }
   
   private ControlFrame() {
