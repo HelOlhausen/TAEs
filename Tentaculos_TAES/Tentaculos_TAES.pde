@@ -282,11 +282,11 @@ PVector findHand(int userId, boolean right_hand){
   float confidence;
   if(right_hand){
     confidence = context.getJointPositionSkeleton(userId,
-                  SimpleOpenNI.SKEL_RIGHT_HAND, hand);
+                  SimpleOpenNI.SKEL_LEFT_HAND, hand);
   }
   else{
     confidence = context.getJointPositionSkeleton(userId,
-                  SimpleOpenNI.SKEL_LEFT_HAND, hand);
+                  SimpleOpenNI.SKEL_RIGHT_HAND, hand);
   }
 
   // convert the detected hand position
