@@ -1,6 +1,12 @@
 import punktiert.math.Vec;
 import punktiert.physics.*;
 import SimpleOpenNI.*;
+import java.awt.Frame;
+import controlP5.*;
+import java.util.ArrayList;
+private ControlP5 cp5;
+
+ControlFrame cf;
 
 //Parametros para usuarios
 SimpleOpenNI  context;
@@ -29,6 +35,11 @@ float posibilidadExistencia = 0.005;
 float posibilidadCreacionEspontanea = 0.00000;
 //Vector para guardar valores del esqueleto
 PVector jointPos = new PVector();
+// Puntos del esqueleto a trackear
+boolean[] partesDelCuerpo = {false,true,true,true,false,false};
+// Opcion de dibujar el esqueleto del usuario trackeado
+boolean dibujarEsqueleto = false;
+
 public void setup() {
   //Creo pantalla
   size(1024,768);
@@ -78,6 +89,10 @@ public void setup() {
       };
     }  
   }
+  
+  // cargo controlador
+  cp5 = new ControlP5(this);
+  cf = addControlFrame("Controladores", 600,600);
 }
 
 public void draw() {
