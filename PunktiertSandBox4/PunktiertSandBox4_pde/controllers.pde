@@ -14,8 +14,9 @@ public class ControlFrame extends PApplet {
     checkbox = cp5.addCheckBox("checkbox")
       .setPosition(10,10)
       .setSize(20,20)
-      .setItemsPerRow(3)
-      .setSpacingRow(20)      
+      .setItemsPerRow(2)
+      .setSpacingRow(10)   
+      .setSpacingColumn(70)   
       .addItem("Cabeza", 0)
       .addItem("Mano izquierda", 0)
       .addItem("Mano derecha", 0)
@@ -24,13 +25,13 @@ public class ControlFrame extends PApplet {
       .addItem("Pie derecho", 0);
         
     cp5.addToggle("Dibujar esqueleto")
-      .setPosition(10, 80)
+      .setPosition(10, 110)
       .setValue(false)
       .plugTo(parent,"dibujarEsqueleto")
       .setLabel("Dibujar esqueleto");              
   
     cp5.addScrollableList("direccionParticulas")
-       .setPosition(10,120)
+       .setPosition(10,160)
        .setSize(130,100)
        .addItems(java.util.Arrays.asList("Estaticas","Descendente","Ascendente",
          "Hacia la derecha","Hacia la izquierda"));        
@@ -39,16 +40,16 @@ public class ControlFrame extends PApplet {
       .plugTo(parent,"radio")
       .setRange(3, 15)
       .setValue(5)
-      .setPosition(160,10);
+      .setPosition(220,10);
       
     cp5.addSlider("Radio de atraccion")
       .plugTo(parent,"radioDeAtraccion")
-      .setRange(5, 30)
+      .setRange(0, 100)
       .setValue(6)
-      .setPosition(160,40);    
+      .setPosition(220,40);    
         
     cp5.addToggle("Generacion espontanea de particulas")
-      .setPosition(160, 80)
+      .setPosition(220, 80)
       .setValue(false)
       .plugTo(parent,"generacionEspontanea")
       .setLabel("Generacion espontanea de particulas");     
