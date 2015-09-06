@@ -20,7 +20,7 @@ public class ControlFrame extends PApplet {
       .addItem("Cabeza", 0)
       .addItem("Mano izquierda", 0)
       .addItem("Mano derecha", 0)
-      .addItem("Centro de masa", 0)
+      .addItem("Caderas", 0)
       .addItem("Pie izquierdo", 0)
       .addItem("Pie derecho", 0);
         
@@ -43,7 +43,7 @@ public class ControlFrame extends PApplet {
       .setPosition(220,10);
       
     cp5.addSlider("Radio de atraccion")
-      .plugTo(parent,"radioDeAtraccion")
+      .plugTo(parent,"radioFuerza")
       .setRange(0, 100)
       .setValue(6)
       .setPosition(220,40);    
