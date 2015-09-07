@@ -111,18 +111,27 @@ public void draw() {
     {
       stroke(userClr[ (userList[i] - 1) % userClr.length ] );
       drawSkeleton(userList[i]);
+      //Atraigo las particulas al usuario
       atraerAlUsuario(userList[i]);
+      //Detecto si el usuario esta haciendo un haduken
       haduken (userList[i]);
+      //Si ya finalizo de cargar un haduken
       if ((empezo== false) && (finalizo == true)){
+        //busco entre todas las particulas cuales deberian verse afectadas por el haduken
         for (int iterador = 0; iterador < particulas.size(); iterador++) {
+            //Consigo la posicion de la siguiente particula
             posicion = particulas.get(iterador).getPreviousPosition();
-            if ((sqrt(posicion.x * attrMD.getAttractor().x + posicion.y * attrMD.getAttractor().y) < radioDeAtraccion) 
-              ||
-              (sqrt(posicion.x * attrMI.getAttractor().x + posicion.y * attrMI.getAttractor().y) < radioDeAtraccion) ){
+            //Si la particula esta dentro del radio de atraccion de la mano derecha
+            if ((sqrt(pow(posicion.x - attrMD.getAttractor().x , 2) * pow(posicion.y - attrMD.getAttractor().y , 2)) < radioDeAtraccion) 
+              || //O si esta dentro del radio de atraccion de la mano izquierda
+              (sqrt( pow(posicion.x - attrMI.getAttractor().x, 2) * pow (posicion.y - attrMI.getAttractor().y , 2)) < radioDeAtraccion) ){
+              //Le agrego una nueva fuerza a la particula
               particulas.get(iterador).addForce(new Vec(pHI.x- pHF.x, pHI.y - pHF.y));
             }
           }
+        //Seteo el finalizado a falzo
         finalizo = false;
+        
       }
     }      
       
@@ -219,7 +228,7 @@ void haduken (int userId){
   context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND ,mI);
   //Corrijo  los valores
   context.convertRealWorldToProjective(mI,mI);
-  println("Distancia entre manos: " + sqrt(pow((mD.x - mI.x), 2) + pow((mD.y - mI.y),2)) );
+  //println("Distancia entre manos: " + sqrt(pow((mD.x - mI.x), 2) + pow((mD.y - mI.y),2)) );
  
   if ((sqrt(pow((mD.x - mI.x), 2) + pow((mD.y - mI.y),2)) < 2*radioDeAtraccion) && (empezo == false) && (finalizo == false) ){
     //Activo bandera de que empezo haduken
@@ -228,10 +237,10 @@ void haduken (int userId){
     pHI.x= (mD.x+mI.x)/2;
     pHI.y= (mD.y+mI.y)/2;
     
-    println("Punto Inicial del Haduken del usuario "+ userId+" : "+ pHI.x + "," + pHI.y);
-    stroke(0,200,0);
-    fill(0,200,0);
-    ellipse(pHI.x, pHI.y, 10,10);
+//    println("Punto Inicial del Haduken del usuario "+ userId+" : "+ pHI.x + "," + pHI.y);
+//    stroke(0,200,0);
+//    fill(0,200,0);
+//    ellipse(pHI.x, pHI.y, 10,10);
   } else if((sqrt(pow((mD.x - mI.x), 2) + pow((mD.y - mI.y),2)) > 2*radioDeAtraccion) && (empezo=true) && (finalizo == false) ){
     
     //Seteo la fHI
@@ -242,11 +251,13 @@ void haduken (int userId){
     finalizo = true;
     
 //    println("Punto Final del Haduken del usuario "+ userId+" : "+ pHI.x + "," + pHI.y);
-    stroke(0,100,0);
-    fill(0,100,0);
-    ellipse(pHI.x, pHI.y, 10,10);
+//    stroke(0,100,0);
+//    fill(0,100,0);
+//    ellipse(pHI.x, pHI.y, 10,10);
   }
- 
+ if (empezo){
+ println("Empezo el haduken en: " + pHI.toString() + "Finalizara en: " + pHF.toString());
+ }
 }
 
 // draw the skeleton with the selected joints

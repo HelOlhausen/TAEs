@@ -20,12 +20,20 @@ VPhysics physics;
 //Gravedad
 BConstantForce gravedad;
 float g =9.8;
+Vec direccion = new Vec (0,0);
+
 //Fuerzas de atraccion
 //BAttraction attrH;
-BAttraction attrH;
-//BAttraction attrCdM;
-BAttraction attrMD;
+BAttraction attrC;
 BAttraction attrMI;
+BAttraction attrMD;
+BAttraction attrCdr;
+BAttraction attrPI;
+BAttraction attrPD;
+//Constantes de la fuerzas
+int radioFuerza=  50;
+Float poderFuerza= .5f;
+
 //Colicion
 BCollision colicion;
 //Parametros de las particulas
@@ -36,6 +44,7 @@ int generacionEspontanea = 5;
 float posibilidadCreacionEspontanea = generacionEspontanea / 10;
 //Vector para guardar valores del esqueleto
 PVector jointPos = new PVector();
+PVector jointPos2 = new PVector();
 // Puntos del esqueleto a trackear
 boolean[] partesDelCuerpo = {false,true,true,true,false,false};
 // Opcion de dibujar el esqueleto del usuario trackeado
@@ -71,17 +80,25 @@ public void setup() {
   physics.setfriction(.1f);
   
   //Creo y agrego una gravedad al Mundo 
-  //gravedad = new BConstantForce(new Vec(0, g).normalizeTo(.03f));
-  //physics.addBehavior(gravedad);
+  gravedad = new BConstantForce(direccion);
+  physics.addBehavior(gravedad);
   
   //Creo y agrego tres nuevas fuerzas de atraccion
   // new AttractionForce: (Vec pos, radius, strength)
-  //attrCdM = new BAttraction(new Vec(width * .5f, height * .5f), 100, .5f);
-  attrMD = new BAttraction(new Vec(width * .5f, height * .5f), 50, .5f);
-  attrMI = new BAttraction(new Vec(width * .5f, height * .5f), 50, .5f);
-  //physics.addBehavior(attrCdM);
-  physics.addBehavior(attrMD);
+  attrC = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
+  attrMI = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
+  attrMD = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
+  attrCdr = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
+  attrPI = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
+  attrPD = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
+
+  physics.addBehavior(attrC);
   physics.addBehavior(attrMI);
+  physics.addBehavior(attrMD);
+  physics.addBehavior(attrCdr);  
+  physics.addBehavior(attrPI);
+  physics.addBehavior(attrPD);
+  
   //Creo pelotitas
   for (int x=0; x<width; x++){
     for(int y=0; y<height; y++){
@@ -154,9 +171,9 @@ public void draw() {
   //Dibujo el radio de la FdA CdM
   //ellipse(attrCdM.getAttractor().x, attrCdM.getAttractor().y, attrCdM.getRadius(), attrCdM.getRadius());
   //Dibujo el radio de la FdA MD
-  ellipse(attrMD.getAttractor().x, attrMD.getAttractor().y, attrMD.getRadius(), attrMD.getRadius());
+  //ellipse(attrMD.getAttractor().x, attrMD.getAttractor().y, attrMD.getRadius(), attrMD.getRadius());
   //Dibujo el radio de la FdA MI
-  ellipse(attrMI.getAttractor().x, attrMI.getAttractor().y, attrMI.getRadius(), attrMI.getRadius());
+  //ellipse(attrMI.getAttractor().x, attrMI.getAttractor().y, attrMI.getRadius(), attrMI.getRadius());
 
   //Dejo de dibujar los bordes
   noStroke();
@@ -184,21 +201,115 @@ public void crearParticula (int x , int y){
 
 //Funcion para dar al usuario poder de atraccion
 void atraerAlUsuario(int userId){
-  // Seteo las fuerzas de atraccion hacia el CdM, mano izquierda y Mano Derecha de cada usuario
-  //Seteo la FdA para el CdM
-  //attrCdM.setAttractor(new Vec(com2d.x,com2d.y));
-  //Obtengo las coordenadas de la MD
-  context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_HAND ,jointPos);
-  //Corrijo  los valores
-  context.convertRealWorldToProjective(jointPos,jointPos);
-  //Seteo la FdA de la MD
-  attrMD.setAttractor(new Vec(jointPos.x, jointPos.y));
-  //Obtengo las coordenadas de la MI
-  context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND ,jointPos);
-  //Corrijo  los valores
-  context.convertRealWorldToProjective(jointPos,jointPos);
-  //Seteo la FdA de la MI
-  attrMI.setAttractor(new Vec(jointPos.x, jointPos.y));
+  //Dejo de dibujar los rellenos
+  noFill();
+  //Dibujo los bordes en rojo
+  stroke(200, 0, 0);
+  
+  //Dibujo el radio de la FdA CdM
+  //ellipse(attrCdM.getAttractor().x, attrCdM.getAttractor().y, attrCdM.getRadius(), attrCdM.getRadius());
+  
+  
+  //Chequeo si se debe agregar una FdA a la cabeza
+  if(partesDelCuerpo[0]){
+    //Obtengo las coordenadas de la Cabeza
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_HEAD ,jointPos);
+    //Corrijo  los valores
+    context.convertRealWorldToProjective(jointPos,jointPos);
+    //Seteo la FdA de la Cabeza
+    attrC.setAttractor(new Vec(jointPos.x, jointPos.y));
+    attrC.setRadius(radioFuerza);
+    attrC.setStrength(poderFuerza);
+    //Dibujo el radio de la FdA C
+    ellipse(attrC.getAttractor().x, attrC.getAttractor().y, attrC.getRadius(), attrC.getRadius());
+  } else{
+    attrC.setRadius(0);
+    attrC.setStrength(0);
+  }
+  
+  //Chequeo si se debe agregar una FdA a la MI
+  if(partesDelCuerpo[1]){
+    //Obtengo las coordenadas de la MI
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND ,jointPos);
+    //Corrijo  los valores
+    context.convertRealWorldToProjective(jointPos,jointPos);
+    //Seteo la FdA de la MI
+    attrMI.setAttractor(new Vec(jointPos.x, jointPos.y));
+    attrMI.setRadius(radioFuerza);
+    attrMI.setStrength(poderFuerza);
+    //Dibujo el radio de la FdA MI
+    ellipse(attrMI.getAttractor().x, attrMI.getAttractor().y, attrMI.getRadius(), attrMI.getRadius());
+  }else{
+    attrMI.setRadius(0);
+    attrMI.setStrength(0);
+  }
+  
+  //Chequeo si se debe agregar una FdA a la MD
+  if(partesDelCuerpo[2]){
+    //Obtengo las coordenadas de la MD
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_HAND ,jointPos);
+    //Corrijo  los valores
+    context.convertRealWorldToProjective(jointPos,jointPos);
+    //Seteo la FdA de la MD
+    attrMD.setAttractor(new Vec(jointPos.x, jointPos.y));
+    attrMD.setRadius(radioFuerza);
+    attrMD.setStrength(poderFuerza);
+    //Dibujo el radio de la FdA MD
+    ellipse(attrMD.getAttractor().x, attrMD.getAttractor().y, attrMD.getRadius(), attrMD.getRadius());
+  }else{
+    attrMD.setRadius(0);
+    attrMD.setStrength(0);
+  }
+  //Chequeo si se debe agregar una FdA a la Cdr
+  if(partesDelCuerpo[3]){
+    //Obtengo las coordenadas de la Cdr
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HIP ,jointPos);
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_HIP ,jointPos2);
+    //Corrijo  los valores
+    context.convertRealWorldToProjective(jointPos,jointPos);
+    context.convertRealWorldToProjective(jointPos2,jointPos2);
+    //Seteo la FdA de la Cdr
+    attrCdr.setAttractor(new Vec((jointPos.x + jointPos2.x)/2, (jointPos.y + jointPos2.y)/2));
+    attrCdr.setRadius(radioFuerza);
+    attrCdr.setStrength(poderFuerza);
+    //Dibujo el radio de la FdA Cdr
+    ellipse(attrCdr.getAttractor().x, attrCdr.getAttractor().y, attrCdr.getRadius(), attrCdr.getRadius());
+  }else{
+    attrCdr.setRadius(0);
+    attrCdr.setStrength(0);
+  }
+  //Chequeo si se debe agregar una FdA a la PI
+  if(partesDelCuerpo[4]){
+    //Obtengo las coordenadas de la PI
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_FOOT ,jointPos);
+    //Corrijo  los valores
+    context.convertRealWorldToProjective(jointPos,jointPos);
+    //Seteo la FdA de la PI
+    attrPI.setAttractor(new Vec(jointPos.x, jointPos.y));
+    attrPI.setRadius(radioFuerza);
+    attrPI.setStrength(poderFuerza);
+    //Dibujo el radio de la FdA PI
+    ellipse(attrPI.getAttractor().x, attrPI.getAttractor().y, attrPI.getRadius(), attrPI.getRadius());
+  }else{
+    attrPI.setRadius(0);
+    attrPI.setStrength(0);
+  }
+  if(partesDelCuerpo[5]){
+    //Obtengo las coordenadas de la PD
+    context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_RIGHT_FOOT ,jointPos);
+    //Corrijo  los valores
+    context.convertRealWorldToProjective(jointPos,jointPos);
+    //Seteo la FdA de la PD
+    attrPD.setAttractor(new Vec(jointPos.x, jointPos.y));
+    attrPD.setRadius(radioFuerza);
+    attrPD.setStrength(poderFuerza);
+    //Dibujo el radio de la FdA PD
+    ellipse(attrPD.getAttractor().x, attrPD.getAttractor().y, attrPD.getRadius(), attrPD.getRadius());
+  }else{
+    attrPD.setRadius(0);
+    attrPD.setStrength(0);
+  }
+
 }
 
 //Funcion para dar al usuario poder KameHameHaaa
