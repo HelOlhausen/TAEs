@@ -47,10 +47,11 @@ public class ControlFrame extends PApplet {
       .setRange(0, 100)
       .setValue(6)
       .setPosition(220,40);    
-        
-    cp5.addToggle("Generacion espontanea de particulas")
+     
+    cp5.addSlider("Generacion espontanea de particulas")
       .setPosition(220, 80)
-      .setValue(false)
+      .setValue(5)
+      .setRange(0,10)
       .plugTo(parent,"generacionEspontanea")
       .setLabel("Generacion espontanea de particulas");     
        

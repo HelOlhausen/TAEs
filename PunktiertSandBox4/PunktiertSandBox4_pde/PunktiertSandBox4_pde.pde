@@ -32,7 +32,8 @@ BCollision colicion;
 float radio = 5;
 float peso = 10;
 float posibilidadExistencia = 0.005;
-float posibilidadCreacionEspontanea = 0.00000;
+int generacionEspontanea = 5;
+float posibilidadCreacionEspontanea = generacionEspontanea / 10;
 //Vector para guardar valores del esqueleto
 PVector jointPos = new PVector();
 // Puntos del esqueleto a trackear
@@ -111,7 +112,10 @@ public void draw() {
     if(context.isTrackingSkeleton(userList[i]))
     {
       stroke(userClr[ (userList[i] - 1) % userClr.length ] );
-      drawSkeleton(userList[i]);
+      if(dibujarEsqueleto)
+      {
+        drawSkeleton(userList[i]);
+      }
       atraerAlUsuario(userList[i]);
       haduken (userList[i]);
     }      
@@ -136,7 +140,8 @@ public void draw() {
   }    
   
   //Creo o NO una particuloa en un lugar random por encima de la pantalla
-  if (random(0,1)>posibilidadCreacionEspontanea){
+  posibilidadCreacionEspontanea = generacionEspontanea / 10;
+  if (random(0,1)<posibilidadCreacionEspontanea){
     crearParticula((int) random(0,width), (int) random(0, height));
   };
   //Updeteo la fisica
