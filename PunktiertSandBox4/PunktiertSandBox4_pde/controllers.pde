@@ -45,15 +45,43 @@ public class ControlFrame extends PApplet {
     cp5.addSlider("Radio de atraccion")
       .plugTo(parent,"radioFuerza")
       .setRange(0, 100)
-      .setValue(6)
+      .setValue(50)
       .setPosition(220,40);    
      
     cp5.addSlider("Generacion espontanea de particulas")
       .setPosition(220, 80)
       .setValue(5)
-      .setRange(0,10)
-      .plugTo(parent,"generacionEspontanea")
-      .setLabel("Generacion espontanea de particulas");     
+      .setRange(0,100)
+      .plugTo(parent,"posibilidadCreacionEspontanea")
+      .setLabel("Generacion espontanea de particulas");    
+     
+     cp5.addToggle("Dibujar radios de atraccion")
+      .setPosition(220, 110)
+      .setValue(false)
+      .plugTo(parent,"dibujarRadios")
+      .setLabel("Dibujar radios de atraccion");    
+      
+      
+    cp5.addSlider("Direccion gravedad X")
+      .setPosition(220, 160)
+      .setValue(0)
+      .setRange(-5,5)
+      .plugTo(parent,"direccionGravedadX")
+      .setLabel("Direccion Gravedad X");  
+      
+    cp5.addSlider("Direccion gravedad Y")
+      .setPosition(220, 190)
+      .setValue(0)
+      .setRange(-5,5)
+      .plugTo(parent,"direccionGravedadY")
+      .setLabel("Direccion Gravedad Y");  
+      
+    cp5.addSlider("Particulas por frame")
+      .setPosition(220, 240)
+      .setValue(50)
+      .setRange(1,100)
+      .plugTo(parent,"particulasPorFrame")
+      .setLabel("Particulas por frame");  
        
        
   }

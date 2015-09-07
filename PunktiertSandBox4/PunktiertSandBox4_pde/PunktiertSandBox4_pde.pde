@@ -19,8 +19,11 @@ PVector com2d = new PVector();
 VPhysics physics;
 //Gravedad
 BConstantForce gravedad;
-float g =9.8;
+float g =0.1;
 Vec direccion = new Vec (0,0);
+int direccionGravedadX = 0;
+int direccionGravedadY = 0;
+int particulasPorFrame = 50;
 
 //Fuerzas de atraccion
 //BAttraction attrH;
@@ -34,14 +37,14 @@ BAttraction attrPD;
 int radioFuerza=  50;
 Float poderFuerza= .5f;
 
+
 //Colicion
 BCollision colicion;
 //Parametros de las particulas
 float radio = 5;
 float peso = 10;
 float posibilidadExistencia = 0.005;
-int generacionEspontanea = 5;
-float posibilidadCreacionEspontanea = generacionEspontanea / 10;
+float posibilidadCreacionEspontanea = 50;
 //Vector para guardar valores del esqueleto
 PVector jointPos = new PVector();
 PVector jointPos2 = new PVector();
@@ -49,6 +52,7 @@ PVector jointPos2 = new PVector();
 boolean[] partesDelCuerpo = {false,true,true,true,false,false};
 // Opcion de dibujar el esqueleto del usuario trackeado
 boolean dibujarEsqueleto = false;
+boolean dibujarRadios = false;
 
 public void setup() {
   //Creo pantalla
@@ -134,7 +138,7 @@ public void draw() {
         drawSkeleton(userList[i]);
       }
       atraerAlUsuario(userList[i]);
-      haduken (userList[i]);
+      //haduken (userList[i]);
     }      
       
     // draw the center of mass
@@ -156,11 +160,17 @@ public void draw() {
     }
   }    
   
-  //Creo o NO una particuloa en un lugar random por encima de la pantalla
-  posibilidadCreacionEspontanea = generacionEspontanea / 10;
-  if (random(0,1)<posibilidadCreacionEspontanea){
-    crearParticula((int) random(0,width), (int) random(0, height));
-  };
+  // Creo las nuevas particulas
+  for (int i = 0; i < particulasPorFrame; i++)
+  {
+    //Creo o NO una particuloa en un lugar random por encima de la pantalla
+    if (random(0,100)<posibilidadCreacionEspontanea){
+      crearParticula((int) random(0,width), (int) random(0, height));
+    };
+  }
+  //Corrijo la gravedad
+  gravedad.setForce( new Vec ( (direccionGravedadX/10), (direccionGravedadY/10) ) );
+  
   //Updeteo la fisica
   physics.update();
   //Dejo de dibujar los rellenos
@@ -181,7 +191,7 @@ public void draw() {
   fill(255, 255,255, 220);
   //Dibujo cada particula
   for (VParticle p : physics.particles) {
-    ellipse(p.x, p.y, p.getRadius() * 2, p.getRadius() * 2);
+    ellipse(p.x, p.y, p.getRadius(), p.getRadius());
   }
 
 }
@@ -221,7 +231,9 @@ void atraerAlUsuario(int userId){
     attrC.setRadius(radioFuerza);
     attrC.setStrength(poderFuerza);
     //Dibujo el radio de la FdA C
-    ellipse(attrC.getAttractor().x, attrC.getAttractor().y, attrC.getRadius(), attrC.getRadius());
+    if (dibujarRadios){
+      ellipse(attrC.getAttractor().x, attrC.getAttractor().y, attrC.getRadius(), attrC.getRadius());
+    }
   } else{
     attrC.setRadius(0);
     attrC.setStrength(0);
@@ -238,7 +250,9 @@ void atraerAlUsuario(int userId){
     attrMI.setRadius(radioFuerza);
     attrMI.setStrength(poderFuerza);
     //Dibujo el radio de la FdA MI
-    ellipse(attrMI.getAttractor().x, attrMI.getAttractor().y, attrMI.getRadius(), attrMI.getRadius());
+    if (dibujarRadios){
+      ellipse(attrMI.getAttractor().x, attrMI.getAttractor().y, attrMI.getRadius(), attrMI.getRadius());
+    }
   }else{
     attrMI.setRadius(0);
     attrMI.setStrength(0);
@@ -255,7 +269,9 @@ void atraerAlUsuario(int userId){
     attrMD.setRadius(radioFuerza);
     attrMD.setStrength(poderFuerza);
     //Dibujo el radio de la FdA MD
-    ellipse(attrMD.getAttractor().x, attrMD.getAttractor().y, attrMD.getRadius(), attrMD.getRadius());
+    if (dibujarRadios){
+      ellipse(attrMD.getAttractor().x, attrMD.getAttractor().y, attrMD.getRadius(), attrMD.getRadius());
+    }
   }else{
     attrMD.setRadius(0);
     attrMD.setStrength(0);
@@ -273,7 +289,9 @@ void atraerAlUsuario(int userId){
     attrCdr.setRadius(radioFuerza);
     attrCdr.setStrength(poderFuerza);
     //Dibujo el radio de la FdA Cdr
-    ellipse(attrCdr.getAttractor().x, attrCdr.getAttractor().y, attrCdr.getRadius(), attrCdr.getRadius());
+    if (dibujarRadios){
+      ellipse(attrCdr.getAttractor().x, attrCdr.getAttractor().y, attrCdr.getRadius(), attrCdr.getRadius());
+    }
   }else{
     attrCdr.setRadius(0);
     attrCdr.setStrength(0);
@@ -289,7 +307,9 @@ void atraerAlUsuario(int userId){
     attrPI.setRadius(radioFuerza);
     attrPI.setStrength(poderFuerza);
     //Dibujo el radio de la FdA PI
-    ellipse(attrPI.getAttractor().x, attrPI.getAttractor().y, attrPI.getRadius(), attrPI.getRadius());
+    if (dibujarRadios){
+      ellipse(attrPI.getAttractor().x, attrPI.getAttractor().y, attrPI.getRadius(), attrPI.getRadius());
+    }
   }else{
     attrPI.setRadius(0);
     attrPI.setStrength(0);
@@ -304,7 +324,9 @@ void atraerAlUsuario(int userId){
     attrPD.setRadius(radioFuerza);
     attrPD.setStrength(poderFuerza);
     //Dibujo el radio de la FdA PD
-    ellipse(attrPD.getAttractor().x, attrPD.getAttractor().y, attrPD.getRadius(), attrPD.getRadius());
+    if (dibujarRadios){
+      ellipse(attrPD.getAttractor().x, attrPD.getAttractor().y, attrPD.getRadius(), attrPD.getRadius());
+    }
   }else{
     attrPD.setRadius(0);
     attrPD.setStrength(0);
@@ -337,6 +359,27 @@ void haduken (int userId){
     ///SEGUIR ACA!!!!!!!!!!
   }
  
+}
+
+//void setearDireccion(){
+//  direccion = new Vec (direccionGravedadX/10,direccionGravedadY/10);
+//  switch(direccionGravedad){
+//    case 0:
+//      direccion = new Vec (0,-g);
+//      break;
+//    case 1:
+//      direccion = new Vec (g,0);
+//      break;
+//    case 2:
+//      direccion = new Vec (0,0);
+//      break;
+//    case 3:
+//      direccion = new Vec (-g,0);
+//      break;
+//    case 4:
+//      direccion = new Vec (0,g);
+//      break;
+//  }
 }
 
 // draw the skeleton with the selected joints
