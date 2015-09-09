@@ -39,22 +39,22 @@ public class ControlFrame extends PApplet {
     cp5.addSlider("Radio de particulas")
       .plugTo(parent,"radio")
       .setRange(3, 15)
-      .setValue(5)
+      .setValue(radio)
       .setPosition(220,10);
       
     cp5.addSlider("Radio de atraccion")
       .plugTo(parent,"radioFuerza")
       .setRange(0, 100)
-      .setValue(50)
+      .setValue(100)
       .setPosition(220,40);    
      
-//    cp5.addSlider("Generacion espontanea de particulas")
-//      .setPosition(220, 80)
-//      .setValue(5)
-//      .setRange(0,100)
-//      .plugTo(parent,"posibilidadCreacionEspontanea")
-//      .setLabel("Generacion espontanea de particulas");    
-//     
+    cp5.addSlider("Generacion espontanea de particulas")
+      .setPosition(220, 80)
+      .setValue(5)
+      .setRange(0,100)
+      .plugTo(parent,"posibilidadCreacionEspontanea")
+      .setLabel("Generacion espontanea de particulas");    
+     
      cp5.addToggle("Dibujar radios de atraccion")
       .setPosition(220, 110)
       .setValue(false)
@@ -65,23 +65,28 @@ public class ControlFrame extends PApplet {
     cp5.addSlider("Direccion gravedad X")
       .setPosition(220, 160)
       .setValue(0)
-      .setRange(-5,5)
+      .setRange(-3,3)
       .plugTo(parent,"direccionGravedadX")
       .setLabel("Direccion Gravedad X");  
       
     cp5.addSlider("Direccion gravedad Y")
       .setPosition(220, 190)
       .setValue(0)
-      .setRange(-5,5)
+      .setRange(-3,3)
       .plugTo(parent,"direccionGravedadY")
       .setLabel("Direccion Gravedad Y");  
       
     cp5.addSlider("Particulas por frame")
       .setPosition(220, 240)
-      .setValue(50)
-      .setRange(1,100)
+      .setValue(5)
+      .setRange(1,50)
       .plugTo(parent,"particulasPorFrame")
       .setLabel("Particulas por frame");  
+      
+    cp5.addBang("eliminarParticulas")
+      .setPosition(220, 270)
+      .setSize(50,20)
+      .setLabel("Borrar particulas");
        
        
   }
@@ -111,6 +116,12 @@ public class ControlFrame extends PApplet {
   
   void controlEvent(ControlEvent theEvent) {  
     String n = theEvent.getName();
+    
+    // Eliminar particulas
+    if( n == "eliminarParticulas") {
+      borrarParticulas = true;
+    }
+    
     // Cambio en las checkbox
     if( n == "checkbox"){
       float[] v = theEvent.getArrayValue();

@@ -17,13 +17,14 @@ PVector com2d = new PVector();
 
 //Mundo Fisico
 VPhysics physics;
+boolean borrarParticulas = false;
 //Gravedad
 BConstantForce gravedad;
 float g =0.1;
 Vec direccion = new Vec (0,0);
 int direccionGravedadX = 0;
 int direccionGravedadY = 0;
-int particulasPorFrame = 50;
+int particulasPorFrame = 5;
 
 //Fuerzas de atraccion
 //BAttraction attrH;
@@ -41,10 +42,10 @@ Float poderFuerza= .5f;
 //Colicion
 BCollision colicion;
 //Parametros de las particulas
-float radio = 5;
+float radio = 10;
 float peso = 10;
-float posibilidadExistencia = 0.005;
-float posibilidadCreacionEspontanea = 50;
+float posibilidadExistencia = 0.0025;
+float posibilidadCreacionEspontanea = 25;
 //Vector para guardar valores del esqueleto
 PVector jointPos = new PVector();
 PVector jointPos2 = new PVector();
@@ -80,7 +81,7 @@ public void setup() {
   noStroke();
 
   //Creo el mundo y lo doto de friccion
-  physics = new VPhysics(/*width,height*/);
+  physics = new VPhysics();
   physics.setfriction(.1f);
   
   //Creo y agrego una gravedad al Mundo 
@@ -104,13 +105,13 @@ public void setup() {
   physics.addBehavior(attrPD);
   
   //Creo pelotitas
-  for (int x=0; x<width; x++){
-    for(int y=0; y<height; y++){
-      if (random(0,1)<posibilidadExistencia){
-        crearParticula(x, y);
-      };
-    }  
-  }
+//  for (int x=0; x<width; x++){
+//    for(int y=0; y<height; y++){
+//      if (random(0,1)<posibilidadExistencia){
+//        crearParticula(x, y);
+//      };
+//    }  
+//  }
   
   // cargo controlador
   cp5 = new ControlP5(this);
@@ -123,6 +124,21 @@ public void draw() {
   // update the cam
   context.update();
   scale(1.6);
+  
+  // Borramos las particulas si el boton fue presionado
+  if(borrarParticulas)
+  {
+    physics= new  VPhysics();
+    borrarParticulas = false;
+    physics.addBehavior(attrC);
+    physics.addBehavior(attrMI);
+    physics.addBehavior(attrMD);
+    physics.addBehavior(attrCdr);  
+    physics.addBehavior(attrPI);
+    physics.addBehavior(attrPD);
+    physics.addBehavior(gravedad);
+  }
+  
   // draw depthImageMap
   //image(context.userImage(),0,0);
   
@@ -142,22 +158,22 @@ public void draw() {
     }      
       
     // draw the center of mass
-    if(context.getCoM(userList[i],com))
-    {
-      context.convertRealWorldToProjective(com,com2d);
-      stroke(100,255,0);
-      strokeWeight(1);
-      beginShape(LINES);
-        vertex(com2d.x,com2d.y - 5);
-        vertex(com2d.x,com2d.y + 5);
-
-        vertex(com2d.x - 5,com2d.y);
-        vertex(com2d.x + 5,com2d.y);
-      endShape();
-      
-      fill(0,255,100);
-      text(Integer.toString(userList[i]),com2d.x,com2d.y);
-    }
+//    if(context.getCoM(userList[i],com))
+//    {
+//      context.convertRealWorldToProjective(com,com2d);
+//      stroke(100,255,0);
+//      strokeWeight(1);
+//      beginShape(LINES);
+//        vertex(com2d.x,com2d.y - 5);
+//        vertex(com2d.x,com2d.y + 5);
+//
+//        vertex(com2d.x - 5,com2d.y);
+//        vertex(com2d.x + 5,com2d.y);
+//      endShape();
+//      
+//      fill(0,255,100);
+//      text(Integer.toString(userList[i]),com2d.x,com2d.y);
+//    }
   }    
   
   // Creo las nuevas particulas
@@ -169,7 +185,7 @@ public void draw() {
     };
   }
   //Corrijo la gravedad
-  gravedad.setForce( new Vec ( (direccionGravedadX/10), (direccionGravedadY/10) ) );
+  gravedad.setForce( new Vec ( -(direccionGravedadX), -(direccionGravedadY) ) );
   
   //Updeteo la fisica
   physics.update();
