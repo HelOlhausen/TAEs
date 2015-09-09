@@ -380,7 +380,7 @@ void haduken (int userId){
 //      direccion = new Vec (0,g);
 //      break;
 //  }
-}
+//}
 
 // draw the skeleton with the selected joints
 void drawSkeleton(int userId)

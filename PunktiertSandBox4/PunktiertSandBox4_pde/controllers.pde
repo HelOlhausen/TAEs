@@ -48,13 +48,13 @@ public class ControlFrame extends PApplet {
       .setValue(50)
       .setPosition(220,40);    
      
-    cp5.addSlider("Generacion espontanea de particulas")
-      .setPosition(220, 80)
-      .setValue(5)
-      .setRange(0,100)
-      .plugTo(parent,"posibilidadCreacionEspontanea")
-      .setLabel("Generacion espontanea de particulas");    
-     
+//    cp5.addSlider("Generacion espontanea de particulas")
+//      .setPosition(220, 80)
+//      .setValue(5)
+//      .setRange(0,100)
+//      .plugTo(parent,"posibilidadCreacionEspontanea")
+//      .setLabel("Generacion espontanea de particulas");    
+//     
      cp5.addToggle("Dibujar radios de atraccion")
       .setPosition(220, 110)
       .setValue(false)
