@@ -11,9 +11,9 @@ ControlFrame cf;
 //Parametros para usuarios
 SimpleOpenNI  context;
 color[]       userClr = new color[]{ color(255,0,0), color(0,255,0), color(0,0,255),
-                                     color(255,255,0), color(255,0,255), color(0,255,255)}; 
-PVector com = new PVector();                                   
-PVector com2d = new PVector(); 
+                                     color(255,255,0), color(255,0,255), color(0,255,255)};
+PVector com = new PVector();
+PVector com2d = new PVector();
 
 //Mundo Fisico
 VPhysics physics;
@@ -55,6 +55,11 @@ boolean[] partesDelCuerpo = {false,true,true,true,false,false};
 boolean dibujarEsqueleto = false;
 boolean dibujarRadios = false;
 
+//Estela
+int inPast = 4;
+boolean dibujarEstela = false;
+
+
 public void setup() {
   //Creo pantalla
   size(1024,768);
@@ -62,15 +67,15 @@ public void setup() {
   context = new SimpleOpenNI(this);
   if(context.isInit() == false)
   {
-     println("Can't init SimpleOpenNI, maybe the camera is not connected!"); 
+     println("Can't init SimpleOpenNI, maybe the camera is not connected!");
      exit();
-     return;  
+     return;
   }
-  // enable depthMap generation 
+  // enable depthMap generation
   context.enableDepth();
   // enable skeleton generation for all joints
   context.enableUser();
-  
+
   //Doy color a las lineas
   stroke(0,0,255);
   //Ensancho las lineas
@@ -83,11 +88,11 @@ public void setup() {
   //Creo el mundo y lo doto de friccion
   physics = new VPhysics();
   physics.setfriction(.1f);
-  
-  //Creo y agrego una gravedad al Mundo 
+
+  //Creo y agrego una gravedad al Mundo
   gravedad = new BConstantForce(direccion);
   physics.addBehavior(gravedad);
-  
+
   //Creo y agrego tres nuevas fuerzas de atraccion
   // new AttractionForce: (Vec pos, radius, strength)
   attrC = new BAttraction(new Vec(width * .5f, height * .5f), radioFuerza, poderFuerza);
@@ -100,19 +105,19 @@ public void setup() {
   physics.addBehavior(attrC);
   physics.addBehavior(attrMI);
   physics.addBehavior(attrMD);
-  physics.addBehavior(attrCdr);  
+  physics.addBehavior(attrCdr);
   physics.addBehavior(attrPI);
   physics.addBehavior(attrPD);
-  
+
   //Creo pelotitas
 //  for (int x=0; x<width; x++){
 //    for(int y=0; y<height; y++){
 //      if (random(0,1)<posibilidadExistencia){
 //        crearParticula(x, y);
 //      };
-//    }  
+//    }
 //  }
-  
+
   // cargo controlador
   cp5 = new ControlP5(this);
   cf = addControlFrame("Controladores", 600,600);
@@ -124,7 +129,7 @@ public void draw() {
   // update the cam
   context.update();
   scale(1.6);
-  
+
   // Borramos las particulas si el boton fue presionado
   if(borrarParticulas)
   {
@@ -133,15 +138,15 @@ public void draw() {
     physics.addBehavior(attrC);
     physics.addBehavior(attrMI);
     physics.addBehavior(attrMD);
-    physics.addBehavior(attrCdr);  
+    physics.addBehavior(attrCdr);
     physics.addBehavior(attrPI);
     physics.addBehavior(attrPD);
     physics.addBehavior(gravedad);
   }
-  
+
   // draw depthImageMap
   //image(context.userImage(),0,0);
-  
+
   // draw the skeleton if it's available
   int[] userList = context.getUsers();
   for(int i=0;i<userList.length;i++)
@@ -155,8 +160,8 @@ public void draw() {
       }
       atraerAlUsuario(userList[i]);
       //haduken (userList[i]);
-    }      
-      
+    }
+
     // draw the center of mass
 //    if(context.getCoM(userList[i],com))
 //    {
@@ -170,12 +175,12 @@ public void draw() {
 //        vertex(com2d.x - 5,com2d.y);
 //        vertex(com2d.x + 5,com2d.y);
 //      endShape();
-//      
+//
 //      fill(0,255,100);
 //      text(Integer.toString(userList[i]),com2d.x,com2d.y);
 //    }
-  }    
-  
+  }
+
   // Creo las nuevas particulas
   for (int i = 0; i < particulasPorFrame; i++)
   {
@@ -186,14 +191,14 @@ public void draw() {
   }
   //Corrijo la gravedad
   gravedad.setForce( new Vec ( -(direccionGravedadX), -(direccionGravedadY) ) );
-  
+
   //Updeteo la fisica
   physics.update();
   //Dejo de dibujar los rellenos
   noFill();
   //Dibujo los bordes en rojo
   stroke(200, 0, 0);
-  
+
   //Dibujo el radio de la FdA CdM
   //ellipse(attrCdM.getAttractor().x, attrCdM.getAttractor().y, attrCdM.getRadius(), attrCdM.getRadius());
   //Dibujo el radio de la FdA MD
@@ -208,6 +213,10 @@ public void draw() {
   //Dibujo cada particula
   for (VParticle p : physics.particles) {
     ellipse(p.x, p.y, p.getRadius(), p.getRadius());
+    if(dibujarEstela){
+      ParticulaCustom particula = (ParticulaCustom) p;
+      dibujarEstela(particula);
+    }
   }
 
 }
@@ -216,7 +225,11 @@ public void crearParticula (int x , int y){
   //Creo un vector con la posicion asignada
   Vec pos = new Vec(x,y);
   //Creo la particula en la posicion pedida con el radio y el parametrizados
-  VParticle particle = new VParticle(pos, peso, radio);
+  ParticulaCustom particle = new ParticulaCustom(x, y, peso, radio);
+  //Setea cantidad de particulas que tendra la estela
+  particle.trail.setInPast(inPast);
+  //Setea factor reduccion estela
+  particle.trail.setreductionFactor(1);
   //Creo comportamiento de colicion
   colicion = new BCollision();
   //Agrego Colicion
@@ -231,11 +244,11 @@ void atraerAlUsuario(int userId){
   noFill();
   //Dibujo los bordes en rojo
   stroke(200, 0, 0);
-  
+
   //Dibujo el radio de la FdA CdM
   //ellipse(attrCdM.getAttractor().x, attrCdM.getAttractor().y, attrCdM.getRadius(), attrCdM.getRadius());
-  
-  
+
+
   //Chequeo si se debe agregar una FdA a la cabeza
   if(partesDelCuerpo[0]){
     //Obtengo las coordenadas de la Cabeza
@@ -254,7 +267,7 @@ void atraerAlUsuario(int userId){
     attrC.setRadius(0);
     attrC.setStrength(0);
   }
-  
+
   //Chequeo si se debe agregar una FdA a la MI
   if(partesDelCuerpo[1]){
     //Obtengo las coordenadas de la MI
@@ -273,7 +286,7 @@ void atraerAlUsuario(int userId){
     attrMI.setRadius(0);
     attrMI.setStrength(0);
   }
-  
+
   //Chequeo si se debe agregar una FdA a la MD
   if(partesDelCuerpo[2]){
     //Obtengo las coordenadas de la MD
@@ -371,10 +384,10 @@ void haduken (int userId){
     stroke(0,200,0);
     fill(0,200,0);
     ellipse(pHI.x, pHI.y, 10,10);
-    
+
     ///SEGUIR ACA!!!!!!!!!!
   }
- 
+
 }
 
 //void setearDireccion(){
@@ -401,7 +414,7 @@ void haduken (int userId){
 // draw the skeleton with the selected joints
 void drawSkeleton(int userId)
 {
-  
+
   context.drawLimb(userId, SimpleOpenNI.SKEL_HEAD, SimpleOpenNI.SKEL_NECK);
 
   context.drawLimb(userId, SimpleOpenNI.SKEL_NECK, SimpleOpenNI.SKEL_LEFT_SHOULDER);
@@ -421,7 +434,7 @@ void drawSkeleton(int userId)
 
   context.drawLimb(userId, SimpleOpenNI.SKEL_TORSO, SimpleOpenNI.SKEL_RIGHT_HIP);
   context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_HIP, SimpleOpenNI.SKEL_RIGHT_KNEE);
-  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_KNEE, SimpleOpenNI.SKEL_RIGHT_FOOT);  
+  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_KNEE, SimpleOpenNI.SKEL_RIGHT_FOOT);
 }
 
 // -----------------------------------------------------------------
@@ -431,7 +444,7 @@ void onNewUser(SimpleOpenNI curContext, int userId)
 {
   println("onNewUser - userId: " + userId);
   println("\tstart tracking skeleton");
-  
+
   curContext.startTrackingSkeleton(userId);
 }
 
@@ -444,5 +457,3 @@ void onVisibleUser(SimpleOpenNI curContext, int userId)
 {
   //println("onVisibleUser - userId: " + userId);
 }
-
-
