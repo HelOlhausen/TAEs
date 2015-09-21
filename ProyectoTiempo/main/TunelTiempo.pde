@@ -2,9 +2,13 @@ class TunelTiempo implements Scene
 {
   PImage bImg; 
   public int linea[] = {height /20 * 10, height /20* 11, height /20 * 12, height /20* 13, height /20 * 14,
-                        height /20 * 15, height /20* 16, height /20 * 17, height /20* 18, height /20 * 19};
+                        height /20 * 15, height /20* 16, height /20 * 17, height /20* 18, height /20 * 19,
+                        height /20 * 20, height /20* 21, height /20 * 22, height /20* 23, height /20 * 24,
+                        height /20 * 25, height /20* 26, height /20 * 27, height /20* 28, height /20 * 29, };
+  public int cantidadLineas = 20;
   public float velocidad = 0.065;
   public TunelTiempo(){};
+  public int masCercana = 0;
   
   void closeScene(){};
   
@@ -40,14 +44,14 @@ class TunelTiempo implements Scene
 //    }
     
     //FEDE Y AC DINAMICO
-    for(int i =0; i<=9; i++){
+    for(int i =0; i < cantidadLineas; i++){
       //println("Posicion Original : " +  linea[0] );
-      linea[i] = movimientoAlHorizonte(linea[i]);
+      movimientoAlHorizonte(i);
       //println("Posicion Posterior : " +  linea[0] );
       dibujarGradienteHorizontal(linea[i], 8, sombra1, fondo1, true);
     }    
     // Dibujo horizonte
-    //dibujarGradienteHorizontal(altura_linea, height/4, color(255,255,255,50), color(255,255,255,0), false);
+    dibujarGradienteHorizontal(height/2, height/4, color(255,255,255,50), color(255,255,255,0), false);
     return linea;
   }// dibujarLineasHorizontales
   
@@ -70,19 +74,26 @@ class TunelTiempo implements Scene
     }
   } // dibujarGradienteHorizontal
   
-  int movimientoAlHorizonte(int posicionY){
+  void movimientoAlHorizonte(int indexPosicionY){
     // println("El posicion actual es : " + posicionY);
       
     //  println("El velocidad es : " + velocidad);
-      if (posicionY <= (int)(height /2)){
-        return height;
+      if (indexPosicionY == masCercana){
+        int siguiente = masCercana - 1;
+        if(siguiente == -1){
+          siguiente = cantidadLineas;
+        }
+        if(linea[siguiente] < height - height/20){
+          linea[indexPosicionY] =  height;
+          masCercana = (indexPosicionY - 1) % cantidadLineas;
+        }
       } else{
-        float distanciaAlHorizonte = abs(posicionY - (height/2));
+        float distanciaAlHorizonte = abs(linea[indexPosicionY] - (height/2));
     //    println("El distanciaAlHorizonte es : " + distanciaAlHorizonte);
         
         float avance = distanciaAlHorizonte * velocidad;
     //    println("El avance es : " +  avance );
-        return int (posicionY - avance);
+        linea[indexPosicionY] = int (linea[indexPosicionY] - avance);
      }
    }//movimientoAlHorizonte
 }
