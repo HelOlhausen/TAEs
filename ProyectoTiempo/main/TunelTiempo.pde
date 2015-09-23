@@ -1,5 +1,8 @@
 class TunelTiempo implements Scene
 {
+  public int cantidad_lineas = 20;
+  public float pos_linea_base = height;
+  
   public TunelTiempo(){};
   
   void closeScene(){};
@@ -8,6 +11,9 @@ class TunelTiempo implements Scene
   
   void drawScene(){
     background(fondo1);
+    // Dibujo horizonte
+    dibujarGradienteHorizontal(8*height/15, height/4, color(255,255,255,50), color(255,255,255,0), false);    
+    // Dibujo lineas horizontales
     dibujarLineasHorizontales();
   };
   
@@ -15,31 +21,39 @@ class TunelTiempo implements Scene
   
   // Funciones auxiliares
   void dibujarLineasHorizontales(){
-    int altura = height;
-    int centro = (int)(height/2);
-    int altura_linea = altura;
+    float altura_linea = pos_linea_base;    
+    float centro = height/2;
     
     // Dibujo lineas
-    for(int i = 1; i<=20; i++){
-      stroke(255,255,255); 
-      // Calculo posicion de la linea
-      altura_linea = (int)(altura - (altura - centro)/7); 
-      line(0, altura_linea, width, altura_linea);
-      // Calculo alto de sombra
-      int h_sombra = (int)((altura - altura_linea)/3);
-      // Dibujo somba en degrade
-      dibujarGradienteHorizontal(altura_linea + 1, h_sombra, sombra1, fondo1, true);
-      altura = altura_linea;
+    for(int i = 0; i<cantidad_lineas; i++){
+      // Calculo alto de sombra            
+      int altura_siguiente = (int)(altura_linea - (altura_linea - centro)/7); 
+      int h_sombra = (int)((altura_linea - altura_siguiente)/3);
+      dibujarLineaHorizontal(altura_linea, h_sombra);
+      altura_linea = altura_siguiente;
     }
-    
-    // Dibujo horizonte
-    dibujarGradienteHorizontal(altura_linea, height/4, color(255,255,255,50), color(255,255,255,0), false);
-    
+
+    // Actualizo altura base
+    pos_linea_base = pos_linea_base - 2;  
+  
+    // Corrijo altura base
+    if(pos_linea_base <= (height - (height/14))){
+      pos_linea_base = height;
+    }  
+   
   }// dibujarLineasHorizontales
   
-  void dibujarGradienteHorizontal(int y, float h, color c1, color c2, boolean descendente){
+  void dibujarLineaHorizontal(float altura, int h_sombra){
+    // Dibujo linea blanca
+    stroke(255,255,255); 
+    line(0, altura, width, altura);
+    // Dibujo sombra
+    dibujarGradienteHorizontal(altura + 1, h_sombra, sombra1, fondo1, true);
+  }
+  
+  void dibujarGradienteHorizontal(float y, float h, color c1, color c2, boolean descendente){
     if(descendente){
-      for (int i = y; i <= y+h; i++) {
+      for (float i = y; i <= y+h; i++) {
         float inter = map(i, y, y+h, 0, 1);
         color c = lerpColor(c1, c2, inter);
         stroke(c);
@@ -47,7 +61,7 @@ class TunelTiempo implements Scene
       }
     }
     else{
-      for (int i = y; i >= y-h; i=i-1) {
+      for (float i = y; i >= y-h; i=i-1) {
         float inter = map(i, y, y-h, 0, 1);
         color c = lerpColor(c1, c2, inter);
         stroke(c);
