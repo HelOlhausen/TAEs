@@ -15,6 +15,8 @@ SceneManager manager;
 // Escena 1 -- Viaje en el tiempo
 color fondo1 = color(50,0,50);
 color sombra1 = color(192,0,192,192);
+boolean mover_lineas_hacia_arriba = false;
+boolean mover_lineas_hacia_derecha = false;
 
 void setup(){
   size(1024, 768);

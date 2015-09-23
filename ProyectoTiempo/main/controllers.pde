@@ -20,11 +20,31 @@ public class ControlFrame extends PApplet {
                 .setPosition(10,120)
                 .setTitle("Color de sombra")
                 .setColorValue(color(192,0,192));
+                
+    cp5.addToggle("Movimiento horizontal")
+        .setPosition(10,200)
+        .plugTo(parent, "mover_lineas_hacia_arriba")
+        .setLabel("Movimiento horizontal");
 
+    cp5.addToggle("Movimiento vertical")
+        .setPosition(10,250)
+        .plugTo(parent, "mover_lineas_hacia_derecha")
+        .setLabel("Movimiento vertical");
+        
+    cp5.addBang("bangInvertir")
+    .setPosition(10,290)
+    .setSize(50,20)
+    .setLabel("Invertir Vertical/Horizontal");
   }
   
   void controlEvent(ControlEvent theEvent) {
     String n = theEvent.getName();
+    
+    // Invertir Verticar/Horizontal
+    if(n=="bangInvertir"){
+        mover_lineas_hacia_arriba = ! mover_lineas_hacia_arriba;
+        mover_lineas_hacia_derecha = ! mover_lineas_hacia_derecha;
+    }
   }
 
   public void draw() {
