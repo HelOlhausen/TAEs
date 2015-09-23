@@ -30,11 +30,18 @@ public class ControlFrame extends PApplet {
       .plugTo(parent,"dibujarEsqueleto")
       .setLabel("Dibujar esqueleto");              
   
-    cp5.addScrollableList("direccionParticulas")
-       .setPosition(10,160)
-       .setSize(130,100)
-       .addItems(java.util.Arrays.asList("Estaticas","Descendente","Ascendente",
-         "Hacia la derecha","Hacia la izquierda"));        
+         
+    cp5.addToggle("Radio variable")
+      .setPosition(10, 160)
+      .setValue(false)
+      .plugTo(parent,"radioVariable")
+      .setLabel("Radio variable");   
+     
+    cp5.addToggle("Radio Epileptico")
+      .setPosition(10, 200)
+      .setValue(false)
+      .plugTo(parent,"radioEpileptico")
+      .setLabel("Radio epileptico");  
          
     cp5.addSlider("Radio de particulas")
       .plugTo(parent,"radio")
@@ -65,14 +72,14 @@ public class ControlFrame extends PApplet {
     cp5.addSlider("Direccion gravedad X")
       .setPosition(220, 160)
       .setValue(0)
-      .setRange(-3,3)
+      .setRange(-10,10)
       .plugTo(parent,"direccionGravedadX")
       .setLabel("Direccion Gravedad X");  
       
     cp5.addSlider("Direccion gravedad Y")
       .setPosition(220, 190)
       .setValue(0)
-      .setRange(-3,3)
+      .setRange(-10,10)
       .plugTo(parent,"direccionGravedadY")
       .setLabel("Direccion Gravedad Y");  
       

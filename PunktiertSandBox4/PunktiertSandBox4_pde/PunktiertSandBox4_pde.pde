@@ -46,6 +46,8 @@ float radio = 10;
 float peso = 10;
 float posibilidadExistencia = 0.0025;
 float posibilidadCreacionEspontanea = 25;
+boolean radioVariable = false;
+boolean radioEpileptico = false;
 //Vector para guardar valores del esqueleto
 PVector jointPos = new PVector();
 PVector jointPos2 = new PVector();
@@ -185,7 +187,7 @@ public void draw() {
     };
   }
   //Corrijo la gravedad
-  gravedad.setForce( new Vec ( -(direccionGravedadX), -(direccionGravedadY) ) );
+  gravedad.setForce( new Vec ( -(direccionGravedadX/ 10), -(direccionGravedadY/ 10) ) );
   
   //Updeteo la fisica
   physics.update();
@@ -207,16 +209,28 @@ public void draw() {
   fill(255, 255,255, 220);
   //Dibujo cada particula
   for (VParticle p : physics.particles) {
-    ellipse(p.x, p.y, p.getRadius(), p.getRadius());
+    float radioRandom = p.getRadius();
+    if(radioEpileptico)
+    {
+       radioRandom = random (0 , p.getRadius());
+    }
+    ellipse(p.x, p.y, radioRandom, radioRandom);
   }
 
 }
 
 public void crearParticula (int x , int y){
+  float radioParticula;
   //Creo un vector con la posicion asignada
   Vec pos = new Vec(x,y);
+  if(radioVariable){
+    radioParticula = random(0, radio);
+  }else{
+    radioParticula = radio;
+  }
+  
   //Creo la particula en la posicion pedida con el radio y el parametrizados
-  VParticle particle = new VParticle(pos, peso, radio);
+  VParticle particle = new VParticle(pos, peso, radioParticula);
   //Creo comportamiento de colicion
   colicion = new BCollision();
   //Agrego Colicion
