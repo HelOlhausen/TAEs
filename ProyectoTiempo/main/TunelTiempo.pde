@@ -6,7 +6,6 @@ class TunelTiempo implements Scene
   public float piso = height;
   public float pos_linea_base = piso;
   public float pos_vertical_base = 0;
-  public int velocidad = -6;
   public TunelTiempo(){};
   
   void closeScene(){};
