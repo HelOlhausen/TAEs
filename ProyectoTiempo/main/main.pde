@@ -27,16 +27,16 @@ void setup(){
   manager = new SceneManager();  
   frameRate(120);
 
-  context = new SimpleOpenNI(this);
- // context.setMirror(true);
-  if(context.isInit() == false)
-  {
-     println("Can't init SimpleOpenNI, maybe the camera is not connected!"); 
-     exit();
-     return;  
-  }
-  context.enableDepth();
-  context.enableUser();
+//  context = new SimpleOpenNI(this);
+// // context.setMirror(true);
+//  if(context.isInit() == false)
+//  {
+//     println("Can't init SimpleOpenNI, maybe the camera is not connected!"); 
+//     exit();
+//     return;  
+//  }
+//  context.enableDepth();
+//  context.enableUser();
 
   println("READY TO GO");
 }

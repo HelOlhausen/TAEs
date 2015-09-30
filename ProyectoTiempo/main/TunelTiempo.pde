@@ -2,7 +2,7 @@ class TunelTiempo implements Scene
 {
   PImage bImg; 
   public int cantidad_lineas = 20;
-  public float horizonte = 7*height/13;
+  public float horizonte = 12*height/23;
   public float piso = height;
   public float pos_linea_base = piso;
   public float pos_vertical_base = 0;
@@ -14,15 +14,11 @@ class TunelTiempo implements Scene
   void initialScene(){};
   
   void drawScene(){
-    background(fondo1);
-    // Dibujo horizonte
-    dibujarGradienteHorizontal(8*height/15, height/4, color(255,255,255,200), color(255,255,255,0), false);    
-    // Dibujo lineas horizontales
-    dibujarLineasHorizontales();
-    dibujarLineasVerticales();
+    // Dibujo fondo
+    dibujarFondo();
     //Bailarin
-    bImg = getMeImg();
-    image(bImg,0,0);
+    //bImg = getMeImg();
+    //image(bImg,0,0);
 
     
   };
@@ -30,6 +26,17 @@ class TunelTiempo implements Scene
   String getSceneName(){return "Tunel del Tiempo";};
   
   // Funciones auxiliares
+  
+  void dibujarFondo(){    
+    background(fondo1);
+    // Dibujo horizonte
+    dibujarGradienteHorizontal(8*height/15, height/4, color(255,255,255,200), color(255,255,255,0), false);    
+    // Dibujo lineas y sombras horizontales
+    dibujarLineasHorizontales();
+    // Dibujo lineas verticales
+    dibujarLineasVerticales();
+  }
+  
   void dibujarLineasHorizontales(){
     float altura_linea = pos_linea_base;    
     float centro = height/2;
@@ -88,12 +95,10 @@ class TunelTiempo implements Scene
     }
   } // dibujarGradienteHorizontal
   
-  void dibujarLineaVertical(float xHorizonte, float xPiso,int h_sombra){
+  void dibujarLineaVertical(float xHorizonte, float xPiso){
     // Dibujo linea blanca
     stroke(255,255,255); 
     line(xHorizonte, horizonte, xPiso, piso);
-    // Dibujo sombra
-    //dibujarGradienteHorizontal(altura + 1, h_sombra, sombra1, fondo1, true);
   } //dibujarLineaVertical
   
   
@@ -105,7 +110,7 @@ class TunelTiempo implements Scene
     
     // Dibujo lineas
     for(int i = 0; i<cantidad_lineas; i++){
-      dibujarLineaVertical(pos_linea_actual, pos_linea_actual + 4*(pos_linea_actual - centro), 10);
+      dibujarLineaVertical(pos_linea_actual, pos_linea_actual + 4*(pos_linea_actual - centro));
       pos_linea_actual = pos_linea_actual + intervalo;       
     }
     
@@ -126,7 +131,7 @@ class TunelTiempo implements Scene
       }
     }
    
-  }// dibujarLineasHorizontales
+  }// dibujarLineasVerticales
    
   PImage getMeImg(){
     // para imagen de la kinect
