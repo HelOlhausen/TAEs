@@ -29,6 +29,9 @@ class Gravedad implements Scene
   PVector jointPos = new PVector();
   PVector jointPos2 = new PVector();
   
+  color[]       userClr = new color[]{ color(255,0,0), color(0,255,0), color(0,0,255),
+                                     color(255,255,0), color(255,0,255), color(0,255,255)};
+  
   void closeScene(){};
   
   void initialScene(){
@@ -70,7 +73,7 @@ class Gravedad implements Scene
       //Fondo blanco
     background(0);
     // update the cam
-    context.update();
+    //context.update();
     scale(1.6);
     
     // Borramos las particulas si el boton fue presionado
@@ -88,15 +91,15 @@ class Gravedad implements Scene
     }
         
     // draw the skeleton if it's available
-    int[] userList = context.getUsers();
-    for(int i=0;i<userList.length;i++)
-    {
-      if(context.isTrackingSkeleton(userList[i]))
-      {
-        stroke(userClr[ (userList[i] - 1) % userClr.length ] );
-        atraerAlUsuario(userList[i]);
-      } 
-    }    
+//    int[] userList = context.getUsers();
+//    for(int i=0;i<userList.length;i++)
+//    {
+//      if(context.isTrackingSkeleton(userList[i]))
+//      {
+//        stroke(userClr[ (userList[i] - 1) % userClr.length ] );
+//        atraerAlUsuario(userList[i]);
+//      } 
+//    }    
     
     // Creo las nuevas particulas
     for (int i = 0; i < particulasPorFrame; i++)
