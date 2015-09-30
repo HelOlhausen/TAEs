@@ -35,6 +35,12 @@ public class ControlFrame extends PApplet {
     .setPosition(10,290)
     .setSize(50,20)
     .setLabel("Invertir Vertical/Horizontal");
+    
+    cp5.addSlider("Velocidad")
+      .plugTo(parent,"velocidad")
+      .setRange(-10,10)
+      .setValue(6)
+      .setPosition(10,350);
   }
   
   void controlEvent(ControlEvent theEvent) {

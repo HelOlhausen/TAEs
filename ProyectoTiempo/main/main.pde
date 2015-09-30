@@ -12,17 +12,37 @@ boolean stopDraw = false;
 // para cambiar fluidamente entre las escenas
 SceneManager manager;
 
-// Escena 1 -- Viaje en el tiempo
+// Escena 1 -- Gravedad
+// Mundo Fisico
+boolean borrarParticulas = false;
+// Gravedad
+int direccionGravedadX = 0;
+int direccionGravedadY = 0;
+int particulasPorFrame = 5;
+// Puntos del esqueleto a trackear
+boolean[] partesDelCuerpo = {false,true,true,true,false,false};
+// Opcion de dibujar el esqueleto del usuario trackeado
+boolean dibujarRadios = false;
+//Parametros de las particulas
+float radio = 10;
+boolean radioVariable = false;
+boolean radioEpileptico = false;
+float posibilidadCreacionEspontanea = 25;
+
+
+
+// Escena 2 -- Tunel del tiempo
 color fondo1 = color(50,0,50);
 color sombra1 = color(192,0,192,192);
 boolean mover_lineas_hacia_arriba = false;
 boolean mover_lineas_hacia_derecha = false;
+int velocidad = 6;
 
 void setup(){
   size(1024, 768);
   noCursor();
   //setMirror(true);
-  cf = addControlFrame("Controladores", 450,700);
+  cf = addControlFrame("Controladores", 900,700);
 
   manager = new SceneManager();  
   frameRate(120);

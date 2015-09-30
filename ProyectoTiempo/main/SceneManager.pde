@@ -6,7 +6,8 @@ class SceneManager{
 
   SceneManager(){
 
-    Scene [] allScenes = {        
+    Scene [] allScenes = { 
+      new Gravedad(),      
       new TunelTiempo()
     };
 
