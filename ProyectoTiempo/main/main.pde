@@ -36,6 +36,7 @@ color fondo1 = color(50,0,50);
 color sombra1 = color(192,0,192,192);
 boolean mover_lineas_hacia_arriba = false;
 boolean mover_lineas_hacia_derecha = false;
+boolean serPantalla = true;
 int velocidad = 6;
 
 void setup(){
@@ -47,16 +48,16 @@ void setup(){
   manager = new SceneManager();  
   frameRate(120);
 
-//  context = new SimpleOpenNI(this);
-// // context.setMirror(true);
-//  if(context.isInit() == false)
-//  {
-//     println("Can't init SimpleOpenNI, maybe the camera is not connected!"); 
-//     exit();
-//     return;  
-//  }
-//  context.enableDepth();
-//  context.enableUser();
+  context = new SimpleOpenNI(this);
+ // context.setMirror(true);
+  if(context.isInit() == false)
+  {
+     println("Can't init SimpleOpenNI, maybe the camera is not connected!"); 
+     exit();
+     return;  
+  }
+  context.enableDepth();
+  context.enableUser();
 
   println("READY TO GO");
 }

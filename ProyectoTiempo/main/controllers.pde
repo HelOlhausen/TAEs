@@ -139,6 +139,13 @@ public class ControlFrame extends PApplet {
       .setRange(-10,10)
       .setValue(6)
       .setPosition(330,400);
+    
+    cp5.addToggle("serPantalla")
+        .setPosition(330,420)
+        .plugTo(parent, "serPantalla")
+        .setLabel("serPantalla");
+  
+
   }
   
   void controlEvent(ControlEvent theEvent) {
@@ -169,6 +176,7 @@ public class ControlFrame extends PApplet {
     if( n == "bang2") {
       manager.activate(1);
     }
+    
   }
 
   public void draw() {

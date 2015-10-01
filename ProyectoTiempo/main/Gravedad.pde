@@ -91,15 +91,15 @@ class Gravedad implements Scene
     }
         
     // draw the skeleton if it's available
-//    int[] userList = context.getUsers();
-//    for(int i=0;i<userList.length;i++)
-//    {
-//      if(context.isTrackingSkeleton(userList[i]))
-//      {
-//        stroke(userClr[ (userList[i] - 1) % userClr.length ] );
-//        atraerAlUsuario(userList[i]);
-//      } 
-//    }    
+    int[] userList = context.getUsers();
+    for(int i=0;i<userList.length;i++)
+    {
+      if(context.isTrackingSkeleton(userList[i]))
+      {
+        stroke(userClr[ (userList[i] - 1) % userClr.length ] );
+        atraerAlUsuario(userList[i]);
+      } 
+    }    
     
     // Creo las nuevas particulas
     for (int i = 0; i < particulasPorFrame; i++)

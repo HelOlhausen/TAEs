@@ -6,7 +6,10 @@ class TunelTiempo implements Scene
   public float piso = height;
   public float pos_linea_base = piso;
   public float pos_vertical_base = 0;
+  
+ 
   public TunelTiempo(){};
+  
   
   void closeScene(){};
   
@@ -16,9 +19,9 @@ class TunelTiempo implements Scene
     // Dibujo fondo
     dibujarFondo();
     //Bailarin
-    //bImg = getMeImg();
-    //image(bImg,0,0);
-
+    bImg = getMeImg();
+    image(bImg,0,0);
+    println("SerPantalla: " + serPantalla);
     
   };
   
@@ -151,16 +154,21 @@ class TunelTiempo implements Scene
       {
         index = x + y * context.depthWidth();
         int d = depthMap[index];
-        // si no hay usuarios
-        // ponemos un pixel transparente
-        //img.pixels[index] = backPic.pixels[index];
+        // si no hay usuarios ponemos un pixel en negro
+        if (serPantalla) {
+          img.pixels[index] = color(0,255);
+        } 
         if(d>0){
           int userNr =userMap[index];
           if( userNr > 0)
           { 
-            // si esta un usuario cargamos img con el valor del pixel
-            // de la backPic
-            img.pixels[index] = color(255,255);
+            // si esta un usuario ponemos un pixel transparente
+            if (serPantalla) {
+              img.pixels[index] = color(0,0);
+            } else{
+              img.pixels[index] = color(255,255);
+            }  
+            
           }
         }
       }
@@ -170,5 +178,10 @@ class TunelTiempo implements Scene
     bigImg.copy(img, 0, 0, 640, 480, 0, 0, width, height);
     return bigImg;
   }//getMeImg
+  
+  //getMiniMe
+  void getMiniMe(int posicion, int escala){
+    
+  }//getMiniMe
 
 }
