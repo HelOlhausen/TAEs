@@ -36,8 +36,18 @@ color fondo1 = color(50,0,50);
 color sombra1 = color(192,0,192,192);
 boolean mover_lineas_hacia_arriba = false;
 boolean mover_lineas_hacia_derecha = false;
-boolean serPantalla = true;
+boolean serPantalla = false;
 int velocidad = 6;
+
+
+// Escena 3 -- Ilusion Optica
+int cantidad_lineas_ilusion = 10;
+float radio_ilusion = 350;
+float intervalo_ilusion = radio_ilusion/cantidad_lineas_ilusion;
+float distancia_base_externo = 1;
+float distancia_base_interno = intervalo_ilusion;
+float velocidad_ilusion = 3;
+
 
 void setup(){
   size(1024, 768);
@@ -58,6 +68,7 @@ void setup(){
   }
   context.enableDepth();
   context.enableUser();
+   context.enableRGB();
 
   println("READY TO GO");
 }

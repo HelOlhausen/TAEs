@@ -18,9 +18,22 @@ class TunelTiempo implements Scene
   void drawScene(){
     // Dibujo fondo
     dibujarFondo();
-    //Bailarin
+    
+    //Cargo un "PEGOTIN" con el Bailarin
     bImg = getMeImg();
+    //Dibujo al Bailarin ensima del fondo
     image(bImg,0,0);
+   
+    //image(img, a x-coordinate of the image, b y-coordinate of the image, 
+    //      c width to display the image, d height to display the image)
+    
+    //PRUEBA dibujo segundo bailarin
+    image(bImg, 0          , 0, width/4, height/4);
+    image(bImg,  3*width/4 , 0, width/4, height/4);
+    image(bImg, 0          , 3 * height/4, width/4, height/4);
+    image(bImg,  3*width/4 , 3 * height/4, width/4, height/4);
+    
+    
     println("SerPantalla: " + serPantalla);
     
   };
@@ -134,7 +147,10 @@ class TunelTiempo implements Scene
     }
    
   }// dibujarLineasVerticales
-   
+  
+
+  
+  //getMeImg() 
   PImage getMeImg(){
     // para imagen de la kinect
     PImage img = new PImage(context.depthWidth(),context.depthHeight(),ARGB); 
@@ -142,46 +158,59 @@ class TunelTiempo implements Scene
     // para imagen escalada
     PImage bigImg = new PImage(width,height,ARGB); 
     bigImg.loadPixels();
-
+    //Actualizo el mapa de usuarios y el de profundidad
     context.update();
     int[]   userMap = context.userMap();
     int[]   depthMap = context.depthMap();
-
+    PImage   rgbMap = context.rgbImage();
+    //Variable para clacular con que pixel estamos trabajando
     int index;
+    //Recorro el largo de la pantalla
     for(int x=0;x <context.depthWidth();x+=1)
     {
+      //Recorro la altura de la pantalla
       for(int y=0;y < context.depthHeight() ;y+=1)
       {
+        //Calculo en que posicion del array se encuentra el pixel con que quiero trabajar.
         index = x + y * context.depthWidth();
+        //Obtengo la profundidad del pixel con el que estoy trabajando
         int d = depthMap[index];
-        // si no hay usuarios ponemos un pixel en negro
+        // Si el usuario Es la pantalla
         if (serPantalla) {
+          //Oscuresco la el pixel
           img.pixels[index] = color(0,255);
         } 
+        //Si la profundidad del pixel es mayor a 0
         if(d>0){
+          //Reviso si el pixel pertenece a un usuario
           int userNr =userMap[index];
+          //Si el pixel pertenece a un usuario
           if( userNr > 0)
           { 
-            // si esta un usuario ponemos un pixel transparente
+            // Si el usuario es la pantalla 
             if (serPantalla) {
+              //Dejamos el pixel transparente
               img.pixels[index] = color(0,0);
-            } else{
+            } 
+            //Si el usario NO es la pantalla
+            else{
+              //Cambiar por ILUSION OPTICA
+              //oscuresemos el pixel
               img.pixels[index] = color(255,255);
+              //Guardo la imagen del usuario
+              //img.pixels[index] = rgbMap.pixels[index];
             }  
             
           }
         }
       }
     }
+    //Updeteamos la imagen a mostrar
     img.updatePixels(); 
     // escalamos las imagenes
     bigImg.copy(img, 0, 0, 640, 480, 0, 0, width, height);
     return bigImg;
   }//getMeImg
   
-  //getMiniMe
-  void getMiniMe(int posicion, int escala){
-    
-  }//getMiniMe
-
+  
 }

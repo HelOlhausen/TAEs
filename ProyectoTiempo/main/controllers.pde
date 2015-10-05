@@ -144,6 +144,12 @@ public class ControlFrame extends PApplet {
         .setPosition(330,420)
         .plugTo(parent, "serPantalla")
         .setLabel("serPantalla");
+        
+        
+    cp5.addBang("bang3")
+      .setPosition(330, 500)
+      .setSize(40, 15)
+      .setLabel("Activar  Escena  3");
   
 
   }
@@ -175,6 +181,9 @@ public class ControlFrame extends PApplet {
     }
     if( n == "bang2") {
       manager.activate(1);
+    }
+    if( n == "bang3") {
+      manager.activate(2);
     }
     
   }

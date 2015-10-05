@@ -8,7 +8,8 @@ class SceneManager{
 
     Scene [] allScenes = { 
       new Gravedad(),      
-      new TunelTiempo()
+      new TunelTiempo(),
+      new IlusionOptica()
     };
 
     scenes =allScenes;
