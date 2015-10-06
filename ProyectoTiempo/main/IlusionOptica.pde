@@ -1,7 +1,6 @@
 class IlusionOptica implements Scene
 {   
   PImage bImg; 
-  PGraphics pg=createGraphics(width,height);
   PVector com = new PVector();
   
   
@@ -13,7 +12,7 @@ class IlusionOptica implements Scene
   
   void drawScene()
   {    
-     int[] userList = context.getUsers();
+    int[] userList = context.getUsers();
     for(int i=0;i<userList.length;i++){
       context.getCoM(userList[i],com); 
       context.convertRealWorldToProjective(com,com);
@@ -21,10 +20,7 @@ class IlusionOptica implements Scene
       com.y=map(com.y, 0,480, 0, height);
     }  
     // Creo ilusion
-    pg.beginDraw();
     crearIlusion();
-    pg.endDraw();
-    image(pg, 0, 0);
     //Cargo un "PEGOTIN" con el Bailarin
     bImg = getMeImg();
     //Dibujo al Bailarin ensima del fondo
@@ -34,27 +30,24 @@ class IlusionOptica implements Scene
   String getSceneName(){return "IlusionOptica";};
   
   void crearIlusion()
-  {
-    
-    pg.background(255);  
-    // Dibujo circulo externo
-    pg.stroke(255,0,0);
-    pg.strokeWeight(5);
-    pg.fill(255);
-    pg.ellipse(com.x, com.y, radio_ilusion*2, radio_ilusion*2);
-    // Dibujo lineas externas
-    pg.stroke(0);
-    pg.strokeWeight(4);
-    dibujarExternos();
-    // Dibujo circulo central
-    pg.stroke(255,0,0);
-    pg.strokeWeight(5);
-    pg.fill(255);
-    pg.ellipse(com.x, com.y, radio_ilusion, radio_ilusion);
-    // Dibujo lineas internas  
-    pg.stroke(0);
-    pg.strokeWeight(4);
+  {    
+    background(fondo3);  
+    // Calculo lineas internas  
+    stroke(color_lineas_ilusion);
+    strokeWeight(grosor_lineas_ilusion);
     dibujarInternos();
+    PImage internos = obtenerCirculoInterno();
+    // Dibujo circulo externo
+    stroke(fondo3);
+    strokeWeight(1);
+    fill(fondo3);
+    ellipse(com.x, com.y, radio_ilusion*2, radio_ilusion*2);
+    // Dibujo lineas externas
+    stroke(color_lineas_ilusion);
+    strokeWeight(grosor_lineas_ilusion);
+    dibujarExternos();
+    // Pego el circulo interno
+    image(internos,0,0);
   }
   
   void dibujarExternos(){
@@ -66,21 +59,20 @@ class IlusionOptica implements Scene
        float sur = com.y + pos_actual;
        float este = com.x + pos_actual;
        float oeste = com.x - pos_actual;
-       pg.line(oeste, com.y, com.x, norte);
-       pg.line(oeste, com.y, com.x, sur);
-       pg.line(este, com.y, com.x, norte);
-       pg.line(este, com.y, com.x, sur);
+       line(oeste, com.y, com.x, norte);
+       line(oeste, com.y, com.x, sur);
+       line(este, com.y, com.x, norte);
+       line(este, com.y, com.x, sur);
     }
     
     // Dibujo arcos
-    pg.stroke(0,0,255);
     float punto_inicial = (cantidad_lineas_ilusion + 1)*intervalo_ilusion + distancia_base_externo;
     for(float j = punto_inicial; sqrt((j/2)*(j/2)*2) < radio_ilusion; j = j + intervalo_ilusion)
     {
-      pg.line(com.x + j, com.y, com.x, com.y+j);
-      pg.line(com.x + j, com.y, com.x, com.y-j);
-      pg.line(com.x - j, com.y, com.x, com.y+j);
-      pg.line(com.x - j, com.y, com.x, com.y-j);
+      line(com.x + j, com.y, com.x, com.y+j);
+      line(com.x + j, com.y, com.x, com.y-j);
+      line(com.x - j, com.y, com.x, com.y+j);
+      line(com.x - j, com.y, com.x, com.y-j);
     }
     
     // Actualizo linea base
@@ -99,21 +91,20 @@ class IlusionOptica implements Scene
        float sur = com.y + pos_actual;
        float este = com.x + pos_actual;
        float oeste = com.x - pos_actual;
-       pg.line(oeste, com.y, com.x, norte);
-       pg.line(oeste, com.y, com.x, sur);
-       pg.line(este, com.y, com.x, norte);
-       pg.line(este, com.y, com.x, sur);
+       line(oeste, com.y, com.x, norte);
+       line(oeste, com.y, com.x, sur);
+       line(este, com.y, com.x, norte);
+       line(este, com.y, com.x, sur);
     }
     
     // Dibujo arcos
-    pg.stroke(0,255,0);
     float punto_inicial = (cantidad_lineas_ilusion/2)*intervalo_ilusion + distancia_base_interno;
     for(float j = punto_inicial; sqrt((j/2)*(j/2)*2) < radio_ilusion/2; j = j + intervalo_ilusion)
     {
-      pg.line(com.x + j, com.y, com.x, com.y+j);
-      pg.line(com.x + j, com.y, com.x, com.y-j);
-      pg.line(com.x - j, com.y, com.x, com.y+j);
-      pg.line(com.x - j, com.y, com.x, com.y-j);
+      line(com.x + j, com.y, com.x, com.y+j);
+      line(com.x + j, com.y, com.x, com.y-j);
+      line(com.x - j, com.y, com.x, com.y+j);
+      line(com.x - j, com.y, com.x, com.y-j);
     }
     
     // Actualizo linea base
@@ -123,6 +114,44 @@ class IlusionOptica implements Scene
       distancia_base_interno = intervalo_ilusion;
     }
   }
+  
+    PImage obtenerCirculoInterno(){
+    PImage img_circulo = createImage(width,height,ARGB);
+    loadPixels();
+    // Cargo pixeles de la pantalla
+    img_circulo.loadPixels();
+    //Variable para clacular con que pixel estamos trabajando
+    int index;
+    //Recorro el largo de la pantalla
+    int xInicial = max(0, (int)(com.x - radio_ilusion/2));
+    int xFinal = min(width, (int)(com.x + radio_ilusion/2));
+    for(int x= xInicial;x < xFinal;x+=1)
+    {
+      //Recorro la altura de la pantalla      
+      int yInicial = max(0, (int)(com.y - radio_ilusion/2));
+      int yFinal = min(height, (int)(com.y + radio_ilusion/2));
+      for(int y= yInicial; y < yFinal; y+=1)
+      {
+        //Calculo en que posicion del array se encuentra el pixel con que quiero trabajar.
+        index = x + y * width;
+        // Si pertenece al circulo
+        if (perteneceCirculo(x,y)) {
+          //Oscuresco la el pixel
+          img_circulo.pixels[index] = pixels[index];
+        }      
+      }
+    }
+    //Updeteamos la imagen a mostrar
+    img_circulo.updatePixels(); 
+    
+    return img_circulo;
+  }// obtenerCirculoInterno
+  
+  boolean perteneceCirculo(int x, int y)
+  {
+    return (sq(x - com.x) + sq(y - com.y) <= sq(radio_ilusion/2));
+  }
+  
 //getMeImg() 
   PImage getMeImg(){
     // para imagen de la kinect
