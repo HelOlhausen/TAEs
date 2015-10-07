@@ -147,17 +147,46 @@ public class ControlFrame extends PApplet {
         
         
     cp5.addBang("bang3")
-      .setPosition(330, 500)
+      .setPosition(670, 50)
       .setSize(40, 15)
       .setLabel("Activar  Escena  3");
       
     cp5.addToggle("Oscurecer")
-      .setPosition(330, 530)
+      .setPosition(670, 100)
       .setValue(false)
       .plugTo(parent,"oscurecer")
       .setLabel("Oscurecer"); 
   
-
+    cp5.addSlider("Cantidad lineas")
+      .plugTo(parent,"cantidad_lineas_ilusion")
+      .setRange(0,20)
+      .setValue(10)
+      .setPosition(670,150);
+    
+    cp5.addSlider("Radio")
+      .plugTo(parent,"radio_ilusion")
+      .setRange(100,600)
+      .setValue(400)
+      .setPosition(670,200);
+    
+    cp5.addSlider("Velocidad")
+      .plugTo(parent,"velocidad_ilusion")
+      .setRange(100,600)
+      .setValue(400)
+      .setPosition(670,250);
+      
+    cp5.addSlider("Grosor linea")
+      .plugTo(parent,"grosor_lineas_ilusion")
+      .setRange(0,20)
+      .setValue(4)
+      .setPosition(670,300);
+      
+    cp5.addColorPicker("Color lineas")
+      .setPosition(670, 350)
+      .plugTo(parent,"color_lineas_ilusion")
+      .setColorValue(color(25,50,0));
+      
+      
   }
   
   void controlEvent(ControlEvent theEvent) {
@@ -203,6 +232,7 @@ public class ControlFrame extends PApplet {
     text("Color de sombra", 330, 164);
     stroke(0,255,0); 
     line(320,10, 320, height -10);
+    line(640,10, 640, height -10);
     
     fondo1 = cp_fondo1.getColorValue();
     sombra1 = cp_sombra1.getColorValue();
