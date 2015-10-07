@@ -28,8 +28,8 @@ class TunelTiempo implements Scene
     //      c width to display the image, d height to display the image)
     
     //PRUEBA dibujo segundo bailarin
-    image(bImg,  1*width/4 , 2 * height/4, width/8, height/8);
-    image(bImg,  3*width/4 , 2 * height/4, width/8, height/8);
+    image(bImg,    2*width/8 , 2 * height/4, width/8, height/8);
+    image(bImg,  5*width/8 , 2 * height/4, width/8, height/8);
     image(bImg,    0       , 2 * height/3, width/3, height/3);
     image(bImg,  2*width/3 , 2 * height/3, width/3, height/3);
     
