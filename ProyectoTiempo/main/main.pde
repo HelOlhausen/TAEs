@@ -42,7 +42,7 @@ int velocidad = 6;
 
 // Escena 3 -- Ilusion Optica
 int cantidad_lineas_ilusion = 10;
-float radio_ilusion = 350;
+float radio_ilusion = 400;
 float intervalo_ilusion = radio_ilusion/cantidad_lineas_ilusion;
 float distancia_base_externo = 1;
 float distancia_base_interno = intervalo_ilusion;
@@ -50,6 +50,7 @@ float velocidad_ilusion = 3;
 color fondo3 = color(0,255,0);
 color color_lineas_ilusion = color(25,50,0);
 int   grosor_lineas_ilusion = 4;
+boolean oscurecer = false;
 
 
 void setup(){

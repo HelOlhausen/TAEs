@@ -150,6 +150,12 @@ public class ControlFrame extends PApplet {
       .setPosition(330, 500)
       .setSize(40, 15)
       .setLabel("Activar  Escena  3");
+      
+    cp5.addToggle("Oscurecer")
+      .setPosition(330, 530)
+      .setValue(false)
+      .plugTo(parent,"oscurecer")
+      .setLabel("Oscurecer"); 
   
 
   }

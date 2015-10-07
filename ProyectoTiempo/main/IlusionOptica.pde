@@ -12,6 +12,8 @@ class IlusionOptica implements Scene
   
   void drawScene()
   {    
+    com.x=width/2;
+    com.y=height/2;
     int[] userList = context.getUsers();
     for(int i=0;i<userList.length;i++){
       context.getCoM(userList[i],com); 
@@ -178,7 +180,7 @@ class IlusionOptica implements Scene
         //Obtengo la profundidad del pixel con el que estoy trabajando
         int d = depthMap[index];
         // Si el usuario Es la pantalla
-        if (serPantalla) {
+        if (oscurecer) {
           //Oscuresco la el pixel
           img.pixels[index] = color(0,255);
         } 
@@ -190,19 +192,10 @@ class IlusionOptica implements Scene
           if( userNr > 0)
           { 
             // Si el usuario es la pantalla 
-            if (serPantalla) {
+            if (true) {
               //Dejamos el pixel transparente
-              img.pixels[index] = color(0,0);
+              img.pixels[index] = color(255,0);
             } 
-            //Si el usario NO es la pantalla
-            else{
-              //Cambiar por ILUSION OPTICA
-              //oscuresemos el pixel
-              img.pixels[index] = color(255,255);
-              //Guardo la imagen del usuario
-              //img.pixels[index] = rgbMap.pixels[index];
-            }  
-            
           }
         }
       }

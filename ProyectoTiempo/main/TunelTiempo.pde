@@ -22,16 +22,16 @@ class TunelTiempo implements Scene
     //Cargo un "PEGOTIN" con el Bailarin
     bImg = getMeImg();
     //Dibujo al Bailarin ensima del fondo
-    image(bImg,0,0);
+    //image(bImg,0,0);
    
     //image(img, a x-coordinate of the image, b y-coordinate of the image, 
     //      c width to display the image, d height to display the image)
     
     //PRUEBA dibujo segundo bailarin
-    image(bImg, 0          , 0, width/4, height/4);
-    image(bImg,  3*width/4 , 0, width/4, height/4);
-    image(bImg, 0          , 3 * height/4, width/4, height/4);
-    image(bImg,  3*width/4 , 3 * height/4, width/4, height/4);
+    image(bImg,  1*width/4 , 2 * height/4, width/8, height/8);
+    image(bImg,  3*width/4 , 2 * height/4, width/8, height/8);
+    image(bImg,    0       , 2 * height/3, width/3, height/3);
+    image(bImg,  2*width/3 , 2 * height/3, width/3, height/3);
     
     
     println("SerPantalla: " + serPantalla);
@@ -196,7 +196,7 @@ class TunelTiempo implements Scene
             else{
               //Cambiar por ILUSION OPTICA
               //oscuresemos el pixel
-              img.pixels[index] = color(255,255);
+              img.pixels[index] = color(192,0,192,255);
               //Guardo la imagen del usuario
               //img.pixels[index] = rgbMap.pixels[index];
             }  
