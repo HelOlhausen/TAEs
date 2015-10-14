@@ -12,6 +12,7 @@ class IlusionOptica implements Scene
   
   void drawScene()
   {    
+    intervalo_ilusion = radio_ilusion/cantidad_lineas_ilusion;
     com.x=width/2;
     com.y=height/2;
     int[] userList = context.getUsers();

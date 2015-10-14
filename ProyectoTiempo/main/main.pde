@@ -57,7 +57,7 @@ void setup(){
   size(1024, 768);
   noCursor();
   //setMirror(true);
-  cf = addControlFrame("Controladores", 900,700);
+  cf = addControlFrame("Controladores", 950,600);
 
   manager = new SceneManager();  
   frameRate(120);
@@ -72,7 +72,7 @@ void setup(){
   }
   context.enableDepth();
   context.enableUser();
-   context.enableRGB();
+  context.enableRGB();
 
   println("READY TO GO");
 }

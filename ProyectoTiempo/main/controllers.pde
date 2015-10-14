@@ -5,7 +5,7 @@ public class ControlFrame extends PApplet {
   Object parent;
   
   CheckBox checkbox;
-  ColorPicker cp_fondo1, cp_sombra1;
+  ColorPicker cp_fondo1, cp_sombra1, cp_lineas, cp_fondo3;
   
   public void setup() {
     size(w, h);
@@ -20,7 +20,7 @@ public class ControlFrame extends PApplet {
       ;
       
     checkbox = cp5.addCheckBox("checkbox")
-      .setPosition(10,30)
+      .setPosition(10,80)
       .setSize(20,20)
       .setItemsPerRow(2)
       .setSpacingRow(10)   
@@ -33,20 +33,20 @@ public class ControlFrame extends PApplet {
       .addItem("Pie derecho", 0);
         
     cp5.addToggle("Dibujar esqueleto")
-      .setPosition(10, 130)
+      .setPosition(10, 180)
       .setValue(false)
       .plugTo(parent,"dibujarEsqueleto")
       .setLabel("Dibujar esqueleto");              
   
          
     cp5.addToggle("Radio variable")
-      .setPosition(10, 180)
+      .setPosition(10, 240)
       .setValue(false)
       .plugTo(parent,"radioVariable")
       .setLabel("Radio variable");   
      
     cp5.addToggle("Radio Epileptico")
-      .setPosition(10, 220)
+      .setPosition(10, 280)
       .setValue(false)
       .plugTo(parent,"radioEpileptico")
       .setLabel("Radio epileptico");  
@@ -55,37 +55,37 @@ public class ControlFrame extends PApplet {
       .plugTo(parent,"radio")
       .setRange(3, 15)
       .setValue(radio)
-      .setPosition(10,260);
+      .setPosition(10,320);
       
     cp5.addSlider("Radio de atraccion")
       .plugTo(parent,"radioFuerza")
       .setRange(0, 100)
       .setValue(100)
-      .setPosition(10,280);    
+      .setPosition(10,340);    
      
     cp5.addSlider("Generacion espontanea de particulas")
-      .setPosition(10, 320)
+      .setPosition(10, 360)
       .setValue(5)
       .setRange(0,100)
       .plugTo(parent,"posibilidadCreacionEspontanea")
       .setLabel("Generacion espontanea de particulas");    
      
      cp5.addToggle("Dibujar radios de atraccion")
-      .setPosition(10, 350)
+      .setPosition(10, 380)
       .setValue(false)
       .plugTo(parent,"dibujarRadios")
       .setLabel("Dibujar radios de atraccion");    
       
       
     cp5.addSlider("Direccion gravedad X")
-      .setPosition(10, 400)
+      .setPosition(10, 420)
       .setValue(0)
       .setRange(-10,10)
       .plugTo(parent,"direccionGravedadX")
       .setLabel("Direccion Gravedad X");  
       
     cp5.addSlider("Direccion gravedad Y")
-      .setPosition(10, 430)
+      .setPosition(10, 440)
       .setValue(0)
       .setRange(-10,10)
       .plugTo(parent,"direccionGravedadY")
@@ -130,11 +130,11 @@ public class ControlFrame extends PApplet {
         .setLabel("Movimiento vertical");
         
     cp5.addBang("bangInvertir")
-    .setPosition(330,340)
-    .setSize(50,20)
-    .setLabel("Invertir Vertical/Horizontal");
+      .setPosition(330,350)
+      .setSize(50,20)
+      .setLabel("Invertir Vertical/Horizontal");
     
-    cp5.addSlider("Velocidad")
+    cp5.addSlider("Velocidad Lineas")
       .plugTo(parent,"velocidad")
       .setRange(-10,10)
       .setValue(6)
@@ -145,7 +145,8 @@ public class ControlFrame extends PApplet {
         .plugTo(parent, "serPantalla")
         .setLabel("serPantalla");
         
-        
+/////////////// Escena 3 - Ilusion Optica ///////////////////////////////// 
+
     cp5.addBang("bang3")
       .setPosition(670, 50)
       .setSize(40, 15)
@@ -171,8 +172,8 @@ public class ControlFrame extends PApplet {
     
     cp5.addSlider("Velocidad")
       .plugTo(parent,"velocidad_ilusion")
-      .setRange(100,600)
-      .setValue(400)
+      .setRange(0,20)
+      .setValue(6)
       .setPosition(670,250);
       
     cp5.addSlider("Grosor linea")
@@ -181,11 +182,15 @@ public class ControlFrame extends PApplet {
       .setValue(4)
       .setPosition(670,300);
       
-    cp5.addColorPicker("Color lineas")
+    cp_lineas = cp5.addColorPicker("Color lineas")
       .setPosition(670, 350)
       .plugTo(parent,"color_lineas_ilusion")
       .setColorValue(color(25,50,0));
       
+    cp_fondo3 = cp5.addColorPicker("Color fondo")
+      .setPosition(670, 450)
+      .plugTo(parent,"fondo3")
+      .setColorValue(color(0,255,0));
       
   }
   
@@ -228,14 +233,19 @@ public class ControlFrame extends PApplet {
     fill(255);
     text("Escena 1 - Gravedad",10,20);
     text("Escena 2 - Tunel del Tiempo",330,20);
+    text("Escena 3 - Ilusion Optica",670,20);
     text("Color de fondo", 330, 84);
     text("Color de sombra", 330, 164);
+    text("Color de lineas", 670, 340);
+    text("Color de fondo", 670, 440);
     stroke(0,255,0); 
     line(320,10, 320, height -10);
     line(640,10, 640, height -10);
     
     fondo1 = cp_fondo1.getColorValue();
     sombra1 = cp_sombra1.getColorValue();
+    color_lineas_ilusion = cp_lineas.getColorValue();
+    fondo3 = cp_fondo3.getColorValue();
   }
 
   private ControlFrame() {
