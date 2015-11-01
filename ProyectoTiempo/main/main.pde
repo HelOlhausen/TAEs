@@ -22,6 +22,7 @@ int particulasPorFrame = 5;
 // Puntos del esqueleto a trackear
 boolean[] partesDelCuerpo = {false,true,true,true,false,false};
 // Opcion de dibujar el esqueleto del usuario trackeado
+boolean dibujarEsqueleto = false;
 boolean dibujarRadios = false;
 //Parametros de las particulas
 float radio = 10;
@@ -87,6 +88,27 @@ void keyPressed(){
   if (key == '-') manager.activatePrevScene();
   if (key == '=') manager.activateNextScene();
 
+}
+
+// -----------------------------------------------------------------
+// SimpleOpenNI events
+
+void onNewUser(SimpleOpenNI curContext, int userId)
+{
+  println("onNewUser - userId: " + userId);
+  println("\tstart tracking skeleton");
+  
+  curContext.startTrackingSkeleton(userId);
+}
+
+void onLostUser(SimpleOpenNI curContext, int userId)
+{
+  println("onLostUser - userId: " + userId);
+}
+
+void onVisibleUser(SimpleOpenNI curContext, int userId)
+{
+  //println("onVisibleUser - userId: " + userId);
 }
 
 // modo pantalla entera

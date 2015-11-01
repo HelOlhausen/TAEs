@@ -45,7 +45,7 @@ BCollision colicion;
 float radio = 10;
 float peso = 10;
 float posibilidadExistencia = 0.0025;
-float posibilidadCreacionEspontanea = 25;
+float posibilidadCreacionEspontanea = 0;
 boolean radioVariable = false;
 boolean radioEpileptico = false;
 //Vector para guardar valores del esqueleto
@@ -157,6 +157,8 @@ public void draw() {
       }
       atraerAlUsuario(userList[i]);
       //haduken (userList[i]);
+      
+      detectarDibujo (userList[i]);
     }      
       
     // draw the center of mass
@@ -216,6 +218,8 @@ public void draw() {
     }
     ellipse(p.x, p.y, radioRandom, radioRandom);
   }
+  
+  
 
 }
 
@@ -429,6 +433,8 @@ void drawSkeleton(int userId)
   context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_SHOULDER, SimpleOpenNI.SKEL_TORSO);
   context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_SHOULDER, SimpleOpenNI.SKEL_TORSO);
 
+  context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_HIP, SimpleOpenNI.SKEL_LEFT_HIP);
+  
   context.drawLimb(userId, SimpleOpenNI.SKEL_TORSO, SimpleOpenNI.SKEL_LEFT_HIP);
   context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_HIP, SimpleOpenNI.SKEL_LEFT_KNEE);
   context.drawLimb(userId, SimpleOpenNI.SKEL_LEFT_KNEE, SimpleOpenNI.SKEL_LEFT_FOOT);
@@ -436,6 +442,8 @@ void drawSkeleton(int userId)
   context.drawLimb(userId, SimpleOpenNI.SKEL_TORSO, SimpleOpenNI.SKEL_RIGHT_HIP);
   context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_HIP, SimpleOpenNI.SKEL_RIGHT_KNEE);
   context.drawLimb(userId, SimpleOpenNI.SKEL_RIGHT_KNEE, SimpleOpenNI.SKEL_RIGHT_FOOT);  
+  
+  
 }
 
 // -----------------------------------------------------------------
@@ -457,6 +465,25 @@ void onLostUser(SimpleOpenNI curContext, int userId)
 void onVisibleUser(SimpleOpenNI curContext, int userId)
 {
   //println("onVisibleUser - userId: " + userId);
+}
+
+void detectarDibujo (int userId) {
+  //Detectar pose dibujo
+  PVector cabeza = new PVector();
+  PVector manoIzquierda = new PVector();
+  
+  //Obtengo las coordenadas de la mano izquierda
+  context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_LEFT_HAND ,manoIzquierda);
+  //Obtengo las coordenadas de la cabeza
+  context.getJointPositionSkeleton(userId, SimpleOpenNI.SKEL_HEAD ,cabeza);
+  //Corrijo  los valores
+  context.convertRealWorldToProjective(cabeza,cabeza);
+  context.convertRealWorldToProjective(manoIzquierda,manoIzquierda);
+  if (cabeza.y > manoIzquierda.y){
+    println("Dibujar runas.");
+  } else{
+    println("NO Dibujar.");    
+  }
 }
 
 
