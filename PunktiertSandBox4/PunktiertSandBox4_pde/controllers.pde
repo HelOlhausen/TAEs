@@ -57,7 +57,7 @@ public class ControlFrame extends PApplet {
      
     cp5.addSlider("Generacion espontanea de particulas")
       .setPosition(220, 80)
-      .setValue(5)
+      .setValue(0)
       .setRange(0,100)
       .plugTo(parent,"posibilidadCreacionEspontanea")
       .setLabel("Generacion espontanea de particulas");    
