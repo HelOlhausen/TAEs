@@ -26,6 +26,9 @@ void setup(){
 
 void draw(){
   background(fondo);
+  if(dibujar){
+    dibujarRuna();
+  }
   runa.beginDraw();
   renderGesture(gesto, width, height, runa);
   runa.endDraw();
@@ -45,23 +48,6 @@ void draw(){
 
 
 void dibujarRuna(){
-  
-}
-
-void mousePressed() {
-  if(mover){
-    // Restarteo dibujo
-    mover = false;
-    posXRuna = 0;
-    runa = createGraphics(width, height);
-  }  
-  gesto.clear();
-  gesto.clearPolys();
-  gesto.addPoint(mouseX, mouseY);
-}
-
-
-void mouseDragged() {
   if (gesto.distToLast(mouseX, mouseY) > minMove) {
     gesto.addPoint(mouseX, mouseY);
     gesto.smooth();
@@ -69,9 +55,49 @@ void mouseDragged() {
   }
 }
 
-void mouseReleased(){
-  mover = true;
+void mouseClicked(){
+  if(dibujar){
+    dibujar = false;
+    mover = true;
+  }
+  else{
+    // Creo una nueva runa
+    dibujar = true;
+    mover = false;
+    posXRuna = 0;
+    posYRuna = 0;
+    gesto.clear();
+    gesto.clearPolys();
+    gesto.addPoint(mouseX, mouseY);
+    runa = createGraphics(width, height);      
+  }
+  
 }
+
+//void mousePressed() {
+//  if(mover){
+//    // Restarteo dibujo
+//    mover = false;
+//    posXRuna = 0;
+//    runa = createGraphics(width, height);
+//  }  
+//  gesto.clear();
+//  gesto.clearPolys();
+//  gesto.addPoint(mouseX, mouseY);
+//}
+
+
+//void mouseDragged() {
+//  if (gesto.distToLast(mouseX, mouseY) > minMove) {
+//    gesto.addPoint(mouseX, mouseY);
+//    gesto.smooth();
+//    gesto.compile();
+//  }
+//}
+
+//void mouseReleased(){
+//  mover = true;
+//}
 
 void renderGesture(Gesture gesture, int w, int h, PGraphics pg) {
   if (gesture.exists) {
