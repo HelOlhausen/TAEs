@@ -30,6 +30,8 @@ void draw(){
     dibujarRuna();
   }
   runa.beginDraw();
+  runa.fill(0,192,0,192);
+  runa.stroke(0,192,0,192);
   renderGesture(gesto, width, height, runa);
   runa.endDraw();
   image(runa, posXRuna, posYRuna);
@@ -74,30 +76,6 @@ void mouseClicked(){
   
 }
 
-//void mousePressed() {
-//  if(mover){
-//    // Restarteo dibujo
-//    mover = false;
-//    posXRuna = 0;
-//    runa = createGraphics(width, height);
-//  }  
-//  gesto.clear();
-//  gesto.clearPolys();
-//  gesto.addPoint(mouseX, mouseY);
-//}
-
-
-//void mouseDragged() {
-//  if (gesto.distToLast(mouseX, mouseY) > minMove) {
-//    gesto.addPoint(mouseX, mouseY);
-//    gesto.smooth();
-//    gesto.compile();
-//  }
-//}
-
-//void mouseReleased(){
-//  mover = true;
-//}
 
 void renderGesture(Gesture gesture, int w, int h, PGraphics pg) {
   if (gesture.exists) {
