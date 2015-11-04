@@ -1,13 +1,24 @@
+import java.awt.Frame;
+import controlP5.*;
+private ControlP5 cp5;
 import java.awt.Polygon;
 
 
 PImage fondo;
-boolean dibujar = false; 
+boolean dibujar = false;
 boolean mover = false;
 PGraphics runa;
 int posXRuna = 0;
 int posYRuna = 0;
 int velocidadMovimiento = 5;
+
+//Controlador
+ControlFrame cf;
+
+//Foco
+PGraphics mask;
+int radio;
+boolean focoIluminado;
 
 Gesture gesto;
 final int minMove = 3;     // Distancia minima entre puntos de la runa
@@ -17,11 +28,19 @@ void setup(){
   fondo = loadImage("fondo.jpg");
   fondo.resize(width, height);
   background(fondo);
-  
+
   gesto = new Gesture(width, height);
   gesto.clear();
-  
+
   runa = createGraphics(width, height);
+
+  // Cargo controlador
+  cp5 = new ControlP5(this);
+  cf = addControlFrame("Controladores", 300,300);
+  //Foco (cambiar si es necesario)
+  radio = 3000;
+  mask = createGraphics(width, height);
+  imageMode(CENTER);
 }
 
 void draw(){
@@ -45,6 +64,9 @@ void draw(){
     posYRuna = 0;
     gesto.clear();
     runa = createGraphics(width, height);
+  }
+  if(focoIluminado){
+    dibujarFoco();
   }
 }
 
@@ -71,9 +93,9 @@ void mouseClicked(){
     gesto.clear();
     gesto.clearPolys();
     gesto.addPoint(mouseX, mouseY);
-    runa = createGraphics(width, height);      
+    runa = createGraphics(width, height);
   }
-  
+
 }
 
 
@@ -87,8 +109,8 @@ void renderGesture(Gesture gesture, int w, int h, PGraphics pg) {
       int ypts[];
       Polygon p;
       int cr;
-      
-            
+
+
       pg.beginShape(QUADS);
       int gnp = gesture.nPolys;
       for (int i=0; i<gnp; i++) {
@@ -139,15 +161,33 @@ void renderGesture(Gesture gesture, int w, int h, PGraphics pg) {
 PVector calcularAvances(float centroX, float centroY, float posX, float posY){
   float largoX = posX - centroX;
   float largoY = posY - centroY;
-  
+
   float h = sqrt(sq(largoX) + sq(largoY));
   float m = h;
   if(h > 0){
     m = 1/h;
   }
-  PVector avance = new PVector(largoX * m * velocidadMovimiento, 
+  PVector avance = new PVector(largoX * m * velocidadMovimiento,
                                 largoY * m * velocidadMovimiento);
   return avance;
-    
+
 }
 
+void dibujarFoco(){
+  mask = createGraphics(width, height);
+  mask.beginDraw();
+
+  for(int i=1; i<101; i++){
+     mask.noStroke();
+     mask.fill(i*3);
+     mask.ellipse(100, 100, radio/i, radio/i*2);
+     mask.ellipse(mouseX +  width/2, mouseY, radio/i, radio/i*2);
+  }
+  mask.endDraw();
+  fondo = loadImage("fondo.jpg");
+  mask.resize(width, height);
+  fondo.resize(width, height);
+  background(0, 0, 0);
+  image(fondo, width/2, height/2);
+  fondo.mask(mask);
+}
